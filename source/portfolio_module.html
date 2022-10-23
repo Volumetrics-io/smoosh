@@ -1,0 +1,24 @@
+<details class="__plate_surface feature_card feature_card_color_{{color}} feature_card_size_{{size}}">
+    <summary>
+        {{title}}
+    </summary>
+    <div onclick="this.parentNode.classList.add('closing'); setTimeout(() => { this.parentNode.removeAttribute('open'); this.parentNode.classList.remove('closing'); }, 200);">
+        <div class="feature_lightbox">
+            <picture width="100%" height="auto">
+                <source media="(prefers-color-scheme:dark)" srcset="{{mediaSrc}}">
+                <img width="100%" height="auto" src="{{mediaSrc}}" alt="PopStage">
+            </picture>
+
+            <div class="feature_lightbox_textPanel">
+                <div class="featureWall_title margin_bottom_1rem">{{title}}</div>
+                <p>{{desc}}</p>
+            </div>
+
+            <div class="features_lightbox_closeBox">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 6L12 12M18 18L12 12M12 12L18 6M12 12L6 18" stroke="var(--c-mochi90)" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</details>

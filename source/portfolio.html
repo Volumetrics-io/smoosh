@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
+
+<!--#set:title=Portfolio-->
+<!--#set:description=This grid is driven by the comment file <em>portfolio_data.csv</em> merged with the template <em>portfolio_module.html</em>.-->
+
+<body>
+  <!--#include:_include/_head.html-->
+  <!--#include:_include/_nav.html-->
+
+  <header>
+    <h1>{{title}}</h1>
+    <p>{{description}}</p>
+  </header>
+
+  <section>
+    <ul>
+      <!--#module:portfolio_data.csv#template:portfolio_module_test.html-->
+    </ul>
+    <!--##module:portfolio_data.csv#template:portfolio_module.html-->
+  </section>
+
+  <!--#include:_include/_footer.html-->
+</body>
+
+</html>
