@@ -1,3 +1,7 @@
+> !! This Readme is obsolete. It needs to be rewritten
+
+---
+
 Statix - the simplest static website generator in Bash
 ======================================================
 

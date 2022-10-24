@@ -1,11 +1,9 @@
 #!/bin/bash
-#Statix - the simplest static website generator in bash
-#(c) Revoltech 2015
-
+# SMASH, a simple static website generator in bash.
+# Based on Statix (c) Revoltech 2015 - the simplest static website generator in bash
 # Improved 2022 by Laurent Baumann - hello@lobau.io
 
-#stubs
-
+# Data files and folders
 ROUTEFILE='routes.conf'
 DATAFILE='data.conf'
 TPLDIR='source'
@@ -112,6 +110,9 @@ function renderTemplate {
         TPLTEXT="${TPLTEXT//<!--@${DATANAME}-->/${DATAVAL}}"
         TPLTEXT="${TPLTEXT//\{\{${DATANAME}\}\}/${DATAVAL}}"
     done
+
+    # remove empty lines
+    local TPLTEXT=$(echo -n "$TPLTEXT"|grep -v '^$')
     
     IFS="$OLDIFS"
     echo -n -e "$TPLTEXT"
