@@ -4,16 +4,16 @@
 # Improved 2022 by Laurent Baumann - hello@lobau.io
 
 # Data files and folders
-ROUTEFILE='routes.conf'
-DATAFILE='data.conf'
-TPLDIR='source'
-OUTDIR='output'
-ASSETDIR='static'
+routeFile='routes.conf'
+dataFile='data.conf'
+templateFolder='source'
+outputFolder='output'
+assetFolder='source/static'
 
 #routines
 
 function prerenderTemplate {
-    local TPLFILE="${TPLDIR}/$1"
+    local TPLFILE="${templateFolder}/$1"
     local TPLCONTENT="$(<$TPLFILE)"
     OLDIFS="$IFS"
     IFS=$'\n'
@@ -23,25 +23,12 @@ function prerenderTemplate {
     # Most common case is to include footer, or navigation
     # Example: <!--#include:_include/_footer.html-->
     # ---------------------------------------------------------------
-    local E=''
+    local empty=''
     local INCLUDES=$(grep -Po '<!--\s*#include:.*-->' "$TPLFILE")
-    for E in $INCLUDES; do
-        local INCLFNAME=$(echo -n "$E"|grep -Po '(?<=#include:).*?(?=-->)')
+    for empty in $INCLUDES; do
+        local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=-->)')
         local INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
-        TPLCONTENT="${TPLCONTENT//$E/$INCLFCONTENT}"
-    done
-    
-    # INLINE BASH
-    # Use to run bash inline: <!--#bash:echo Hello World!-->
-    # Can be used in footer for copyright info for example
-    # <!--#bash:date +"%Y"--> — All Rights Reserved
-    # ---------------------------------------------------------------
-    local M=''
-    local SCRIPTS=$(grep -Po '<!--\s*#bash:.*-->' "$TPLFILE")
-    for M in $SCRIPTS; do
-        local COMMAND=$(echo -n "$M"|grep -Po '(?<=#bash:).*?(?=-->)')
-        local OUTPUTCONTENT=$(eval $COMMAND)
-        TPLCONTENT="${TPLCONTENT//$M/$OUTPUTCONTENT}"
+        TPLCONTENT="${TPLCONTENT//$empty/$INCLFCONTENT}"
     done
     
     # DATA MODULES
@@ -51,19 +38,18 @@ function prerenderTemplate {
     # The values in the csv are applied to the variabled in the template
     # For example, the values in the column "name" in the csv will remplate {{name}} templates
     # ---------------------------------------------------------------
-    local D=''
     local MODULES=$(grep -Po '<!--\s*#module:.*:.*-->' "$TPLFILE")
-    for D in $MODULES; do
-        local MODDATA=$(echo -n "$D"|grep -Po '(?<=#module:).*?(?=#template:)')
-        local MODTPLT=$(echo -n "$D"|grep -Po '(?<=#template:).*?(?=-->)')
+    for empty in $MODULES; do
+        local MODDATA=$(echo -n "$empty"|grep -Po '(?<=#module:).*?(?=#template:)')
+        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=-->)')
         
         # Load the data file (csv) and iterate over it
-        local MODDATAFILE="${TPLDIR}/$MODDATA"
-        local MODTPLTFILE="${TPLDIR}/$MODTPLT"
+        local MODdataFile="${templateFolder}/$MODDATA"
+        local MODTPLTFILE="${templateFolder}/$MODTPLT"
         local ModuleTemplateContent="$(<$MODTPLTFILE)"
         
         # Map the csv file to a 1D array, one row per line
-        IFS=$'\n' mapfile -t csvArray < $MODDATAFILE
+        IFS=$'\n' mapfile -t csvArray < $MODdataFile
         
         # Store the keys in an array for later (the first line of the csv file)
         IFS='|' read -ra keyArray <<< "${csvArray[0]}"
@@ -78,7 +64,19 @@ function prerenderTemplate {
                 done
                 MODOUTPUT+="$templateOutput"
         done
-        TPLCONTENT="${TPLCONTENT//$D/$MODOUTPUT}"
+        TPLCONTENT="${TPLCONTENT//$empty/$MODOUTPUT}"
+    done
+
+    # INLINE BASH
+    # Use to run bash inline: <!--#bash:echo Hello World!-->
+    # Can be used in footer for copyright info for example
+    # <!--#bash:date +"%Y"--> — All Rights Reserved
+    # ---------------------------------------------------------------
+    local SCRIPTS=$(grep -Po '<!--\s*#bash:.*-->' "$TPLFILE")
+    for empty in $SCRIPTS; do
+        local COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=-->)')
+        local OUTPUTCONTENT=$(eval $COMMAND)
+        TPLCONTENT="${TPLCONTENT//$empty/$OUTPUTCONTENT}"
     done
     
     IFS="$OLDIFS"
@@ -98,16 +96,14 @@ function renderTemplate {
         local SETVAR="${SET%%=*}"
         local SETVAL="${SET#*=}"
         TPLTEXT="${TPLTEXT//$L/}"
-        TPLTEXT="${TPLTEXT//<!--@${SETVAR}-->/${SETVAL}}"
         TPLTEXT="${TPLTEXT//\{\{${SETVAR}\}\}/${SETVAL}}"
     done
     
-    # Global variables from the DATAFILE
-    DATALIST="$(<$DATAFILE)"
+    # Global variables from the dataFile
+    DATALIST="$(<$dataFile)"
     for DATA in $DATALIST; do
         DATANAME="${DATA%%:*}"
         DATAVAL="${DATA#*:}"
-        TPLTEXT="${TPLTEXT//<!--@${DATANAME}-->/${DATAVAL}}"
         TPLTEXT="${TPLTEXT//\{\{${DATANAME}\}\}/${DATAVAL}}"
     done
 
@@ -120,11 +116,11 @@ function renderTemplate {
 
 #run main action
 
-mkdir -p "$OUTDIR"
-rm -rf "${OUTDIR}"/*
-echo "🧹 Cleaned up $(tput bold)/$OUTDIR/$(tput sgr0) folder"
-if [[ "$ASSETDIR" ]]; then cp -rd "$ASSETDIR" "${OUTDIR}/" && echo "🎨 Copied $(tput bold)/$ASSETDIR/$(tput sgr0) assets folder";fi
-ROUTELIST="$(<$ROUTEFILE)"
+mkdir -p "$outputFolder"
+rm -rf "${outputFolder}"/*
+echo "🧹 Cleaned up $(tput bold)/$outputFolder/$(tput sgr0) folder"
+if [[ "$assetFolder" ]]; then cp -rd "$assetFolder" "${outputFolder}/" && echo "🎨 Copied $(tput bold)/$assetFolder/$(tput sgr0) assets folder";fi
+ROUTELIST="$(<$routeFile)"
 OLDIFS="$IFS"
 IFS=$'\n'
 
@@ -132,8 +128,8 @@ for ROUTE in $ROUTELIST; do
     TPLNAME="${ROUTE%%:*}"
     TPLPATH="${ROUTE#*:}"
     if [[ "$TPLNAME" && "$TPLPATH" ]]; then
-        mkdir -p "${OUTDIR}${TPLPATH}"
-        renderTemplate "$TPLNAME" > "${OUTDIR}${TPLPATH}index.html"
+        mkdir -p "${outputFolder}${TPLPATH}"
+        renderTemplate "$TPLNAME" > "${outputFolder}${TPLPATH}index.html"
         echo "✨ Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"
     fi
 done
