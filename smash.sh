@@ -1,19 +1,48 @@
 #!/bin/bash
-# SMASH, a simple static website generator in bash.
-# Based on Statix (c) Revoltech 2015 - the simplest static website generator in bash
-# Improved 2022 by Laurent Baumann - hello@lobau.io
+
+<<LICENSE
+MIT License
+
+Copyright (c) 2016 Chad Braun-Duin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+LICENSE
+
+# This script only works with GNU sed. So if you have both BSD sed
+# and GNU sed installed (often happens on OSX), you will need to alias GNU sed.
+# If you get the error "sed: illegal option -- r", you will need to apply this fix.
+# shopt -s expand_aliases
+# alias sed=gsed
+
+# set -x
 
 # Data files and folders
-routeFile='routes.conf'
-dataFile='data.conf'
-templateFolder='source'
-outputFolder='output'
-assetFolder='source/static'
+routeFile='source/_routes.conf'
+dataFile='source/_data.conf'
+templateDir='source'
+outputDir='output'
+assetDir='source/static'
 
 #routines
 
 function prerenderTemplate {
-    local TPLFILE="${templateFolder}/$1"
+    local TPLFILE="${templateDir}/$1"
     local TPLCONTENT="$(<$TPLFILE)"
     OLDIFS="$IFS"
     IFS=$'\n'
@@ -24,9 +53,9 @@ function prerenderTemplate {
     # Example: <!--#include:_include/_footer.html-->
     # ---------------------------------------------------------------
     local empty=''
-    local INCLUDES=$(grep -Po '<!--\s*#include:.*-->' "$TPLFILE")
+    local INCLUDES=$(grep -Po '{{\s*#include:.*}}' "$TPLFILE")
     for empty in $INCLUDES; do
-        local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=-->)')
+        local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
         local INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
         TPLCONTENT="${TPLCONTENT//$empty/$INCLFCONTENT}"
     done
@@ -38,14 +67,14 @@ function prerenderTemplate {
     # The values in the csv are applied to the variabled in the template
     # For example, the values in the column "name" in the csv will remplate {{name}} templates
     # ---------------------------------------------------------------
-    local MODULES=$(grep -Po '<!--\s*#module:.*:.*-->' "$TPLFILE")
+    local MODULES=$(grep -Po '{{\s*#data:.*:.*}}' "$TPLFILE")
     for empty in $MODULES; do
-        local MODDATA=$(echo -n "$empty"|grep -Po '(?<=#module:).*?(?=#template:)')
-        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=-->)')
+        local MODDATA=$(echo -n "$empty"|grep -Po '(?<=#data:).*?(?=#template:)')
+        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=}})')
         
         # Load the data file (csv) and iterate over it
-        local MODdataFile="${templateFolder}/$MODDATA"
-        local MODTPLTFILE="${templateFolder}/$MODTPLT"
+        local MODdataFile="${templateDir}/$MODDATA"
+        local MODTPLTFILE="${templateDir}/$MODTPLT"
         local ModuleTemplateContent="$(<$MODTPLTFILE)"
         
         # Map the csv file to a 1D array, one row per line
@@ -72,12 +101,23 @@ function prerenderTemplate {
     # Can be used in footer for copyright info for example
     # <!--#bash:date +"%Y"--> — All Rights Reserved
     # ---------------------------------------------------------------
-    local SCRIPTS=$(grep -Po '<!--\s*#bash:.*-->' "$TPLFILE")
+    local SCRIPTS=$(grep -Po '{{\s*#bash:.*}}' "$TPLFILE")
     for empty in $SCRIPTS; do
-        local COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=-->)')
+        local COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=}})')
         local OUTPUTCONTENT=$(eval $COMMAND)
         TPLCONTENT="${TPLCONTENT//$empty/$OUTPUTCONTENT}"
     done
+
+    # MARKDOWN
+    # Render markdown file inline
+    # Example: <!--#markdown:README.md-->
+    # ---------------------------------------------------------------
+    # local MDS=$(grep -Po '{{\s*#markdown:.*}}' "$TPLFILE")
+    # for empty in $MDS; do
+    #     local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
+    #     local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
+    #     TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
+    # done
     
     IFS="$OLDIFS"
     echo -n -e "$TPLCONTENT"
@@ -85,14 +125,14 @@ function prerenderTemplate {
 
 function renderTemplate {
     local TPLTEXT="$(prerenderTemplate $1)"
-    local SETS=$(echo -n "$TPLTEXT"|grep -Po '<!--#set:.*?-->')
+    local SETS=$(echo -n "$TPLTEXT"|grep -Po '{{#set:.*?}}')
     local L=''
     OLDIFS="$IFS"
     IFS=$'\n'
     
     # Local variables with <!--#set-->
     for L in $SETS; do
-        local SET=$(echo -n "$L"|grep -Po '(?<=#set:).*?(?=-->)')
+        local SET=$(echo -n "$L"|grep -Po '(?<=#set:).*?(?=}})')
         local SETVAR="${SET%%=*}"
         local SETVAL="${SET#*=}"
         TPLTEXT="${TPLTEXT//$L/}"
@@ -107,6 +147,20 @@ function renderTemplate {
         TPLTEXT="${TPLTEXT//\{\{${DATANAME}\}\}/${DATAVAL}}"
     done
 
+    # MARKDOWN
+    # Render markdown file inline
+    # Example: <!--#markdown:README.md-->
+    # We do markdown here because we don't want anything processed by smash
+    # ---------------------------------------------------------------
+    local MDS=$(echo -n "$TPLTEXT"|grep -Po '{{\s*#markdown:.*}}')
+    # echo $MDS
+    local empty=''
+    for empty in $MDS; do
+        local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
+        local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
+        TPLTEXT="${TPLTEXT//$empty/$MDCONTENT}"
+    done
+
     # remove empty lines
     local TPLTEXT=$(echo -n "$TPLTEXT"|grep -v '^$')
     
@@ -116,10 +170,13 @@ function renderTemplate {
 
 #run main action
 
-mkdir -p "$outputFolder"
-rm -rf "${outputFolder}"/*
-echo "🧹 Cleaned up $(tput bold)/$outputFolder/$(tput sgr0) folder"
-if [[ "$assetFolder" ]]; then cp -rd "$assetFolder" "${outputFolder}/" && echo "🎨 Copied $(tput bold)/$assetFolder/$(tput sgr0) assets folder";fi
+mkdir -p "$outputDir"
+rm -rf "${outputDir}"/*
+echo "🧹 Cleaned up $(tput bold)/$outputDir/$(tput sgr0) folder"
+if [[ "$assetDir" ]]; then
+    cp -rd "$assetDir" "${outputDir}/"
+    echo "🎨 Copied $(tput bold)/$assetDir/$(tput sgr0) assets folder"
+fi
 ROUTELIST="$(<$routeFile)"
 OLDIFS="$IFS"
 IFS=$'\n'
@@ -128,13 +185,12 @@ for ROUTE in $ROUTELIST; do
     TPLNAME="${ROUTE%%:*}"
     TPLPATH="${ROUTE#*:}"
     if [[ "$TPLNAME" && "$TPLPATH" ]]; then
-        mkdir -p "${outputFolder}${TPLPATH}"
-        renderTemplate "$TPLNAME" > "${outputFolder}${TPLPATH}index.html"
+        mkdir -p "${outputDir}${TPLPATH}"
+        renderTemplate "$TPLNAME" > "${outputDir}${TPLPATH}index.html"
         echo "✨ Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"
     fi
 done
 
 IFS="$OLDIFS"
 
-echo "🎀 The website is ready!"
-echo ""
+echo -e "🎀 The website is ready!\n"

@@ -1,12 +1,37 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
 
-<!--#set:title=Portfolio-->
-<!--#set:description=Example of using csv and modules. More underneath-->
-<!--#include:_include/_head.html-->
+{{#set:title=Portfolio}}
+{{#set:description=Example of using csv and modules. More underneath}}
+{{#include:_include/_head.html}}
+
+<style>
+  #portfolio {
+    list-style-type: none;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr));
+  }
+
+  article {
+    display: block;
+    padding: 1rem;
+    border-radius: .5rem;
+    border: 1px solid var(--c-border);
+  }
+
+  article>* {
+    margin-bottom: 1rem;
+  }
+
+  article>*:last-child {
+    margin-bottom: 0;
+  }
+
+</style>
 
 <body>
-  <!--#include:_include/_nav.html-->
+  {{#include:_include/_nav.html}}
 
   <header>
     <h1>{{title}}</h1>
@@ -14,31 +39,29 @@
     <p><a href="#markup">Scroll to code</a></p>
   </header>
 
-  <section>
-    <ul>
-      <!--#module:portfolio.csv#template:_include/_tile.html-->
-    </ul>
+  <section id="portfolio">
+    {{#data:portfolio.csv#template:_include/_tile.html}}
   </section>
 
   <section id="markup">
     <h2 id="code">The markup</h2>
     <p>This is what you write in your html file. Very simple</p>
-    <textarea><!--#bash:echo 'PCEtLSNtb2R1bGU6cG9ydGZvbGlvLmNzdiN0ZW1wbGF0ZTpfaW5jbHVkZS9fdGlsZS5odG1sLS0+' | base64 -d --></textarea>
+    <textarea>{{#bash:echo 'PCEtLSNtb2R1bGU6cG9ydGZvbGlvLmNzdiN0ZW1wbGF0ZTpfaW5jbHVkZS9fdGlsZS5odG1sLS0+' | base64 -d }}</textarea>
   </section>
 
   <section>
     <h2>The data file</h2>
     <p>Each tile is a row from this CSV file (which is indeed, pipe-separated…):</p>
-    <textarea><!--#bash:cat source/portfolio.csv--></textarea>
+    <textarea>{{#bash:cat source/portfolio.csv}}</textarea>
   </section>
 
   <section>
     <h2>The template file</h2>
     <p>Smashed with this template:</p>
-    <textarea><!--#bash:cat source/_include/_tile.html--></textarea>
+    <textarea>{{#bash:cat source/_include/_tile.html}}</textarea>
   </section>
 
-  <!--#include:_include/_footer.html-->
+  {{#include:_include/_footer.html}}
 </body>
 
 </html>
