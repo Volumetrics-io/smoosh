@@ -52,8 +52,8 @@
   </header>
   
   <section>
-    <h1 id="readme.md">README.md</h1>
-<p>Smash.sh is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets. It features the most basic templating engine ever possible but allows to organize your content in a SEO-friendly way. All Statix-based websites contain these parts:</p>
+    <h1 id="smash.sh">🔨 Smash.sh</h1>
+<p>Smash is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets. This script is heavily based off <a href="https://gist.github.com/plugnburn/c2f7cc3807e8934b179e">Statix</a>. Here are the high-level features:</p>
 <table>
 <thead>
 <tr class="header">
@@ -63,40 +63,43 @@
 </thead>
 <tbody>
 <tr class="odd">
+<td style="text-align: left;">Work with bash, with only <code>pandoc</code> as a dependency if you use md files</td>
+<td style="text-align: left;"><code>./smash.sh</code></td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">Reuse HTML snippets anywhere in your HTML code</td>
 <td style="text-align: left;"><code>{{#include:path/to/snippet.html}}</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Generate HTML from a CSV file and an HTML snippet</td>
 <td style="text-align: left;"><code>{{#data:mywork.csv#template:card.html}}</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">define page specific variables</td>
 <td style="text-align: left;"><code>{{#set:title=Hi there 👋}}</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">use defined variables anywhere you want</td>
 <td style="text-align: left;"><code>{{title}}</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">render markdown anywhere (You will need <code>pandoc</code> installed.)</td>
 <td style="text-align: left;"><code>{{#markdown:README.md}}</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Define site-wide variables like <code>base-name</code>, <code>base-url</code>, etc.</td>
 <td style="text-align: left;">Edit the file <code>_data.conf</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Define routes, like about.html -{{#markdown:README.md}}gt; /about/.</td>
 <td style="text-align: left;">Edit the file <code>_routes.conf</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">TODO:Generate sitemap.xml</td>
 <td style="text-align: left;">Automatic</td>
 </tr>
 </tbody>
 </table>
-<p>This script is <strong>heavily</strong> based off <a href="https://gist.github.com/plugnburn/c2f7cc3807e8934b179e">Statix</a></p>
 <hr />
 <h1 id="data-files-and-folders">Data files and folders</h1>
 <ul>
@@ -116,9 +119,9 @@
 <li><strong>Use block</strong> (<code>{{variable}}</code>) is a block that inserts a previously set variable value.</li>
 </ul>
 <p>Note that if a variable is set twice, the first set block occurence overrides any others. So if you want to set some page-specific variables and want to be sure they will not be overwritten by any included templates, please put the appropriate set blocks at the very top of the page.</p>
-<h2 id="variables">Variables</h2>
 <h2 id="inline-bash">Inline bash</h2>
 <h2 id="markdown-support">Markdown support</h2>
+<h2 id="site-configuration">Site configuration</h2>
 <h2 id="route-configuration">Route configuration</h2>
 <p>To let Statix know the entire structure of your website, it’s mandatory to specify all routing in a separate file (say, <code>routes.conf</code>). This file contains the mapping of a physical template name (relative to your templates directory) and logical URL (relative to the supposed website root). Note that in order to avoid any building errors all URLs <strong>must</strong> end in <code>/</code> (forward slash). Physical names and URLs are separated with a colon (<code>:</code>). Each mapping pair is on a new line.</p>
 <p>Example of a typical <code>routes.conf</code> file:</p>
@@ -127,8 +130,8 @@ about.html:/about-us/
 contact.html:/contact/
 work.html:/portfolio/</code></pre>
 <h2 id="build-process">Build process</h2>
-<p>Building the website out of the source materials (templates, routes and assets) is as simple as calling the script with all necessary parameters:</p>
-<p><code>/path/to/smash.sh</code></p>
+<p>Just run the command in the base directory (where <code>source/</code> and <code>output/</code> are):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./smash.sh</span></span></code></pre></div>
 <p>Everything but asset directory is mandatory here. If <code>{{#markdown:README.md}}lt;asset directory{{#markdown:README.md}}gt;</code> is not specified, output will contain just the generated HTML tree and nothing else will be copied. If <code>{{#markdown:README.md}}lt;output directory{{#markdown:README.md}}gt;</code> doesn’t exist, it will be created, <strong>but if it does and is not empty, it will be completely overwritten, so be careful!</strong> After the build completes, you can transfer the output directory contents wherever you want to host it.</p>
   </section>
   <footer>
@@ -136,7 +139,7 @@ work.html:/portfolio/</code></pre>
         2022 — All Rights Reserved
     </p>
     <p>
-        Generated with bash on 2022-10-24 at 17:51
+        Generated with smash.sh on 2022-10-25 at 13:17
     </p>
 </footer>
 </body>

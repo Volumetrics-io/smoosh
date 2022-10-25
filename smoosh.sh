@@ -172,10 +172,10 @@ function renderTemplate {
 
 mkdir -p "$outputDir"
 rm -rf "${outputDir}"/*
-echo "🧹 Cleaned up $(tput bold)/$outputDir/$(tput sgr0) folder"
+echo -e "🧹 Cleaned up $(tput bold)/$outputDir/$(tput sgr0) folder"
 if [[ "$assetDir" ]]; then
     cp -rd "$assetDir" "${outputDir}/"
-    echo "🎨 Copied $(tput bold)/$assetDir/$(tput sgr0) assets folder"
+    echo "🎩 Copied $(tput bold)/$assetDir/$(tput sgr0) assets folder"
 fi
 ROUTELIST="$(<$routeFile)"
 OLDIFS="$IFS"
@@ -187,7 +187,9 @@ for ROUTE in $ROUTELIST; do
     if [[ "$TPLNAME" && "$TPLPATH" ]]; then
         mkdir -p "${outputDir}${TPLPATH}"
         renderTemplate "$TPLNAME" > "${outputDir}${TPLPATH}index.html"
-        echo "✨ Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"
+        chars=✨🌟⭐
+        emoji="${chars:RANDOM%${#chars}:1}"
+        echo "$emoji Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"
     fi
 done
 
