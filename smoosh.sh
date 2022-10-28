@@ -3,7 +3,7 @@
 <<LICENSE
 MIT License
 
-Copyright (c) 2016 Chad Braun-Duin
+Copyright (c) 2022 Laurent Baumann
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,11 +39,17 @@ templateDir='source'
 outputDir='output'
 assetDir='source/static'
 
-#routines
+# Avoid "&" to be interpreted by bash
+# Generate a random remplacement string to temporarely replace
+# the & character while we process all the template files.
+# That avoid bash to interpret the & in our csv, md, or html files
+replacementString=$(echo $RANDOM | md5sum | head -c 20; echo;)
 
 function prerenderTemplate {
     local TPLFILE="${templateDir}/$1"
     local TPLCONTENT="$(<$TPLFILE)"
+    
+    TPLCONTENT="${TPLCONTENT//&/$replacementString}"
     OLDIFS="$IFS"
     IFS=$'\n'
     
@@ -57,6 +63,8 @@ function prerenderTemplate {
     for empty in $INCLUDES; do
         local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
         local INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
+        # Escape & in the imported content since it's gonna be processed again
+        INCLFCONTENT="${INCLFCONTENT//&/\\&}"
         TPLCONTENT="${TPLCONTENT//$empty/$INCLFCONTENT}"
     done
     
@@ -74,11 +82,14 @@ function prerenderTemplate {
         
         # Load the data file (csv) and iterate over it
         local MODdataFile="${templateDir}/$MODDATA"
-        local MODTPLTFILE="${templateDir}/$MODTPLT"
-        local ModuleTemplateContent="$(<$MODTPLTFILE)"
+        local dataOutput="$(<$MODdataFile)"
+        dataOutput="${dataOutput//&/$replacementString}"
         
+        local MODTPLTFILE="${templateDir}/$MODTPLT"
+
         # Map the csv file to a 1D array, one row per line
-        IFS=$'\n' mapfile -t csvArray < $MODdataFile
+        # IFS=$'\n' mapfile -t csvArray < $MODdataFile
+        IFS=$'\n' mapfile -t csvArray < <(printf "$dataOutput")
         
         # Store the keys in an array for later (the first line of the csv file)
         IFS='|' read -ra keyArray <<< "${csvArray[0]}"
@@ -87,12 +98,15 @@ function prerenderTemplate {
         for ((i = 1; i < ${#csvArray[@]}; ++i)); do
                 IFS='|' read -ra valuesArray <<< "${csvArray[$i]}"
                 local templateOutput="$(<$MODTPLTFILE)"
+                templateOutput="${templateOutput//&/$replacementString}"
+                
                 for ((j = 0; j < ${#valuesArray[@]}; ++j)); do
-                    templateOutput="${templateOutput//<!--@${keyArray[$j]}-->/${valuesArray[$j]}}"
                     templateOutput="${templateOutput//\{\{${keyArray[$j]}\}\}/${valuesArray[$j]}}"
                 done
                 MODOUTPUT+="$templateOutput"
         done
+        
+        MODOUTPUT="${MODOUTPUT//$replacementString/&}"
         TPLCONTENT="${TPLCONTENT//$empty/$MODOUTPUT}"
     done
 
@@ -108,17 +122,6 @@ function prerenderTemplate {
         TPLCONTENT="${TPLCONTENT//$empty/$OUTPUTCONTENT}"
     done
 
-    # MARKDOWN
-    # Render markdown file inline
-    # Example: <!--#markdown:README.md-->
-    # ---------------------------------------------------------------
-    # local MDS=$(grep -Po '{{\s*#markdown:.*}}' "$TPLFILE")
-    # for empty in $MDS; do
-    #     local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
-    #     local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
-    #     TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
-    # done
-    
     IFS="$OLDIFS"
     echo -n -e "$TPLCONTENT"
 }
@@ -150,7 +153,6 @@ function renderTemplate {
     # MARKDOWN
     # Render markdown file inline
     # Example: <!--#markdown:README.md-->
-    # We do markdown here because we don't want anything processed by smash
     # ---------------------------------------------------------------
     local MDS=$(echo -n "$TPLTEXT"|grep -Po '{{\s*#markdown:.*}}')
     # echo $MDS
@@ -158,8 +160,13 @@ function renderTemplate {
     for empty in $MDS; do
         local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
         local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
+        # Escape the & character so it doesn't get interpreted
+        MDCONTENT="${MDCONTENT//&/$replacementString}"
         TPLTEXT="${TPLTEXT//$empty/$MDCONTENT}"
     done
+
+    # Put back the &
+    TPLTEXT="${TPLTEXT//$replacementString/\&amp;}"
 
     # remove empty lines
     local TPLTEXT=$(echo -n "$TPLTEXT"|grep -v '^$')
@@ -169,13 +176,12 @@ function renderTemplate {
 }
 
 #run main action
-
 mkdir -p "$outputDir"
 rm -rf "${outputDir}"/*
 echo -e "🧹 Cleaned up $(tput bold)/$outputDir/$(tput sgr0) folder"
 if [[ "$assetDir" ]]; then
     cp -rd "$assetDir" "${outputDir}/"
-    echo "🎩 Copied $(tput bold)/$assetDir/$(tput sgr0) assets folder"
+    echo "📦️ Copied $(tput bold)/$assetDir/$(tput sgr0) assets folder"
 fi
 ROUTELIST="$(<$routeFile)"
 OLDIFS="$IFS"
@@ -187,7 +193,7 @@ for ROUTE in $ROUTELIST; do
     if [[ "$TPLNAME" && "$TPLPATH" ]]; then
         mkdir -p "${outputDir}${TPLPATH}"
         renderTemplate "$TPLNAME" > "${outputDir}${TPLPATH}index.html"
-        chars=✨🌟⭐
+        chars=✨🌟⭐💫
         emoji="${chars:RANDOM%${#chars}:1}"
         echo "$emoji Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"
     fi
