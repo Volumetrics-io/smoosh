@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example · Portfolio</title>
+    <!-- Stylesheet -->
+    <link type="text/css" rel="stylesheet" href="/static/style.css" />
+    <link rel="icon" type="image/svg" href="/static/favicon.svg" />
+    <!-- SEO -->
+    <meta name="description" content="Example of using csv and modules. More underneath" />
+    <meta name="keywords" content="foo,bar,baz" />
+    <!-- Basic Open Graph -->
+    <meta content="Portfolio" itemProp="name" class="next-head" />
+    <meta content="Example of using csv and modules. More underneath" itemProp="description" class="next-head" />
+    <meta content="https://example.com/preview.jpg" itemProp="image" class="next-head" />
+    <!-- Generic Open Graph -->
+    <meta property="og:type" content="article" class="next-head" />
+    <meta content="Portfolio" property="og:title" class="next-head" />
+    <meta content="https://example.com" property="og:url" class="next-head" />
+    <meta content="https://example.com/preview.jpg" property="og:image" class="next-head" />
+    <meta content="Example of using csv and modules. More underneath" property="og:description" class="next-head" />
+    <meta content="Example" property="og:site_name" class="next-head" />
+</head>
+<style>
+  #portfolio {
+    list-style-type: none;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr));
+  }
+  article {
+    display: block;
+    padding: 1rem;
+    border-radius: .5rem;
+    border: 1px solid var(--c-border);
+  }
+  article>* {
+    margin-bottom: 1rem;
+  }
+  article>*:last-child {
+    margin-bottom: 0;
+  }
+</style>
+<body>
+  <nav>
+  <a href="/"><svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --color: #333;
+        }
+        @media (prefers-color-scheme:dark) {
+            :root {
+                --color: #efefef;
+            }
+        }
+    </style>
+    <path d="M0 8h16" stroke="var(--color)" stroke-width="2" />
+    <path d="M2 14 14 2M14 14 2 2" stroke="var(--color)" stroke-width="2" stroke-linecap="round" />
+    <circle cx="8" cy="15" r="1" fill="var(--color)" />
+    <circle cx="8" cy="1" r="1" fill="var(--color)" />
+</svg></a>
+  <a href="/">Home</a>
+  <a href="/portfolio">Portfolio</a>
+  <a href="/about">About</a>
+</nav>
+<hr />
+  <header>
+    <h1>Portfolio</h1>
+    <p>Example of using csv and modules. More underneath</p>
+    <p><a href="#markup">Scroll to code</a></p>
+  </header>
+  <section id="portfolio">
+    <article>
+    <picture width="100%" height="auto">
+        <source media="(prefers-color-scheme:dark)" srcset="/static/dark.jpg">
+        <img width="100%" height="auto" src="/static/light.jpg" alt="Alt text">
+    </picture>
+    <h3>Nostrum placeat necessitatibus</h3>
+    <p><a href="https://example.com" target="_blank">Read more</a></p>
+</article><article>
+    <picture width="100%" height="auto">
+        <source media="(prefers-color-scheme:dark)" srcset="/static/dark.jpg">
+        <img width="100%" height="auto" src="/static/light.jpg" alt="Alt text">
+    </picture>
+    <h3>Id ex perspiciatis obcaecati eligendi</h3>
+    <p><a href="https://example.com" target="_blank">Read more</a></p>
+</article><article>
+    <picture width="100%" height="auto">
+        <source media="(prefers-color-scheme:dark)" srcset="/static/dark.jpg">
+        <img width="100%" height="auto" src="/static/light.jpg" alt="Alt text">
+    </picture>
+    <h3>Numquam magnam quis dicta</h3>
+    <p><a href="https://example.com" target="_blank">Read more</a></p>
+</article><article>
+    <picture width="100%" height="auto">
+        <source media="(prefers-color-scheme:dark)" srcset="/static/dark.jpg">
+        <img width="100%" height="auto" src="/static/light.jpg" alt="Alt text">
+    </picture>
+    <h3>Dolor neque perspiciatis accusantium</h3>
+    <p><a href="https://example.com" target="_blank">Read more</a></p>
+</article><article>
+    <picture width="100%" height="auto">
+        <source media="(prefers-color-scheme:dark)" srcset="/static/dark.jpg">
+        <img width="100%" height="auto" src="/static/light.jpg" alt="Alt text">
+    </picture>
+    <h3>Suscipit tempora quo facilis provident</h3>
+    <p><a href="https://example.com" target="_blank">Read more</a></p>
+</article><article>
+    <picture width="100%" height="auto">
+        <source media="(prefers-color-scheme:dark)" srcset="/static/dark.jpg">
+        <img width="100%" height="auto" src="/static/light.jpg" alt="Alt text">
+    </picture>
+    <h3>Ea asperiores possimus nostrum</h3>
+    <p><a href="https://example.com" target="_blank">Read more</a></p>
+</article>
+  </section>
+  <section id="markup">
+    <h2 id="code">The markup</h2>
+    <p>This is what you write in your html file. Very simple</p>
+    <textarea><!--#module:portfolio.csv#template:_include/_tile.html--></textarea>
+  </section>
+  <section>
+    <h2>The data file</h2>
+    <p>Each tile is a row from this CSV file (which is indeed, pipe-separated…):</p>
+    <textarea>title|media-light|media-dark|media-alt|link-url
+Nostrum placeat necessitatibus|/static/light.jpg|/static/dark.jpg|Alt text|https://example.com
+Id ex perspiciatis obcaecati eligendi|/static/light.jpg|/static/dark.jpg|Alt text|https://example.com
+Numquam magnam quis dicta|/static/light.jpg|/static/dark.jpg|Alt text|https://example.com
+Dolor neque perspiciatis accusantium|/static/light.jpg|/static/dark.jpg|Alt text|https://example.com
+Suscipit tempora quo facilis provident|/static/light.jpg|/static/dark.jpg|Alt text|https://example.com
+Ea asperiores possimus nostrum|/static/light.jpg|/static/dark.jpg|Alt text|https://example.com</textarea>
+  </section>
+  <section>
+    <h2>The template file</h2>
+    <p>Smashed with this template:</p>
+    <textarea><article>
+    <picture width="100%" height="auto">
+        <source media="(prefers-color-scheme:dark)" srcset="{{media-dark}}">
+        <img width="100%" height="auto" src="{{media-light}}" alt="{{media-alt}}">
+    </picture>
+    <h3>Portfolio</h3>
+    <p><a href="{{link-url}}" target="_blank">Read more</a></p>
+</article></textarea>
+  </section>
+  <footer>
+    <p>© You, Inc.
+        2022 — All Rights Reserved
+    </p>
+    <p>
+        Generated with smash.sh on 2022-10-28 at 01:18
+    </p>
+</footer>
+</body>
+</html>
