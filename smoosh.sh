@@ -36,7 +36,7 @@ LICENSE
 routeFile='source/_routes.conf'
 dataFile='source/_data.conf'
 templateDir='source'
-outputDir='output'
+outputDir='public'
 assetDir='source/static'
 
 # Avoid "&" to be interpreted by bash
