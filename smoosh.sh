@@ -48,18 +48,30 @@ replacementString=$(echo $RANDOM | md5sum | head -c 20; echo;)
 function prerenderTemplate {
     local TPLFILE="${templateDir}/$1"
     local TPLCONTENT="$(<$TPLFILE)"
+    local empty=''
     
     TPLCONTENT="${TPLCONTENT//&/$replacementString}"
     OLDIFS="$IFS"
     IFS=$'\n'
+
+    # MARKDOWN
+    # Render markdown file inline
+    # Example: <!--#markdown:README.md-->
+    # ---------------------------------------------------------------
+    local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
+    for empty in $MDS; do
+        local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
+        local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
+        MDCONTENT="${MDCONTENT//&/$replacementString}"
+        TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
+    done
     
     # INCLUDES
     # Insert the content of a file into another
     # Most common case is to include footer, or navigation
     # Example: <!--#include:_include/_footer.html-->
     # ---------------------------------------------------------------
-    local empty=''
-    local INCLUDES=$(grep -Po '{{\s*#include:.*}}' "$TPLFILE")
+    local INCLUDES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#include:.*}}')
     for empty in $INCLUDES; do
         local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
         local INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
@@ -75,10 +87,11 @@ function prerenderTemplate {
     # The values in the csv are applied to the variabled in the template
     # For example, the values in the column "name" in the csv will remplate {{name}} templates
     # ---------------------------------------------------------------
-    local MODULES=$(grep -Po '{{\s*#data:.*:.*}}' "$TPLFILE")
+    local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*#parent:.*}}')
     for empty in $MODULES; do
         local MODDATA=$(echo -n "$empty"|grep -Po '(?<=#data:).*?(?=#template:)')
-        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=}})')
+        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=#parent:)')
+        local parent=$(echo -n "$empty"|grep -Po '(?<=#parent:).*?(?=}})')
         
         # Load the data file (csv) and iterate over it
         local MODdataFile="${templateDir}/$MODDATA"
@@ -94,17 +107,18 @@ function prerenderTemplate {
         # Store the keys in an array for later (the first line of the csv file)
         IFS='|' read -ra keyArray <<< "${csvArray[0]}"
 
-        MODOUTPUT=""
+        MODOUTPUT="<div class="$parent">"
         for ((i = 1; i < ${#csvArray[@]}; ++i)); do
-                IFS='|' read -ra valuesArray <<< "${csvArray[$i]}"
-                local templateOutput="$(<$MODTPLTFILE)"
-                templateOutput="${templateOutput//&/$replacementString}"
-                
-                for ((j = 0; j < ${#valuesArray[@]}; ++j)); do
-                    templateOutput="${templateOutput//\{\{${keyArray[$j]}\}\}/${valuesArray[$j]}}"
-                done
-                MODOUTPUT+="$templateOutput"
+            IFS='|' read -ra valuesArray <<< "${csvArray[$i]}"
+            local templateOutput="$(<$MODTPLTFILE)"
+            templateOutput="${templateOutput//&/$replacementString}"
+            
+            for ((j = 0; j < ${#valuesArray[@]}; ++j)); do
+                templateOutput="${templateOutput//\{\{${keyArray[$j]}\}\}/${valuesArray[$j]}}"
+            done
+            MODOUTPUT+="$templateOutput"
         done
+        MODOUTPUT+="</div>"
         
         MODOUTPUT="${MODOUTPUT//$replacementString/&}"
         TPLCONTENT="${TPLCONTENT//$empty/$MODOUTPUT}"
@@ -115,7 +129,7 @@ function prerenderTemplate {
     # Can be used in footer for copyright info for example
     # <!--#bash:date +"%Y"--> — All Rights Reserved
     # ---------------------------------------------------------------
-    local SCRIPTS=$(grep -Po '{{\s*#bash:.*}}' "$TPLFILE")
+    local SCRIPTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#bash:.*}}')
     for empty in $SCRIPTS; do
         local COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=}})')
         local OUTPUTCONTENT=$(eval $COMMAND)
@@ -148,21 +162,6 @@ function renderTemplate {
         DATANAME="${DATA%%:*}"
         DATAVAL="${DATA#*:}"
         TPLTEXT="${TPLTEXT//\{\{${DATANAME}\}\}/${DATAVAL}}"
-    done
-
-    # MARKDOWN
-    # Render markdown file inline
-    # Example: <!--#markdown:README.md-->
-    # ---------------------------------------------------------------
-    local MDS=$(echo -n "$TPLTEXT"|grep -Po '{{\s*#markdown:.*}}')
-    # echo $MDS
-    local empty=''
-    for empty in $MDS; do
-        local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
-        local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
-        # Escape the & character so it doesn't get interpreted
-        MDCONTENT="${MDCONTENT//&/$replacementString}"
-        TPLTEXT="${TPLTEXT//$empty/$MDCONTENT}"
     done
 
     # Put back the &
@@ -200,5 +199,11 @@ for ROUTE in $ROUTELIST; do
 done
 
 IFS="$OLDIFS"
+
+# "deploy" the files to my dropbox 
+# dropboxDir='/home/lobau/Dropbox/Apps/Blot/smoosh.sh/'
+# rm -rf "${dropboxDir}"/*
+# cp -rd "${outputDir}"/* "$dropboxDir"
+# echo "🔄 Copied to ${dropboxDir}"
 
 echo -e "🎀 The website is ready!\n"
