@@ -1,11 +1,11 @@
-# 🔨 Smash.sh
+# 🔨 Smoosh.sh
 
-Smash is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets.
+Smoosh is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets.
 This script is heavily based off [Statix](https://gist.github.com/plugnburn/c2f7cc3807e8934b179e). Here are the high-level features:
 
 | Feature                                                                | How?                                      |
 | :--------------------------------------------------------------------- | :---------------------------------------- |
-| Work with bash, with only `pandoc` as a dependency if you use md files | `./smash.sh`                              |
+| Work with bash, with only `pandoc` as a dependency if you use md files | `./smoosh.sh`                              |
 | Reuse HTML snippets anywhere in your HTML code                         | `{{#include:path/to/snippet.html}}`       |
 | Generate HTML from a CSV file and an HTML snippet                      | `{{#data:mywork.csv#template:card.html}}` |
 | define page specific variables                                         | `{{#set:title=Hi there 👋}}`             |
@@ -63,7 +63,7 @@ work.html:/portfolio/
 Just run the command in the base directory (where `source/` and `output/` are):
 
 ```bash
-./smash.sh
+./smoosh.sh
 ```
 
 Everything but asset directory is mandatory here. If `<asset directory>` is not specified, output will contain just the generated HTML tree and nothing else will be copied. If `<output directory>` doesn't exist, it will be created, **but if it does and is not empty, it will be completely overwritten, so be careful!** After the build completes, you can transfer the output directory contents wherever you want to host it.
