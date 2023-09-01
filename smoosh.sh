@@ -49,23 +49,11 @@ function prerenderTemplate {
     local TPLFILE="${templateDir}/$1"
     local TPLCONTENT="$(<$TPLFILE)"
     local empty=''
-    
+
     TPLCONTENT="${TPLCONTENT//&/$replacementString}"
     OLDIFS="$IFS"
     IFS=$'\n'
 
-    # MARKDOWN
-    # Render markdown file inline
-    # Example: <!--#markdown:README.md-->
-    # ---------------------------------------------------------------
-    local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
-    for empty in $MDS; do
-        local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
-        local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
-        MDCONTENT="${MDCONTENT//&/$replacementString}"
-        TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
-    done
-    
     # INCLUDES
     # Insert the content of a file into another
     # Most common case is to include footer, or navigation
@@ -79,7 +67,7 @@ function prerenderTemplate {
         INCLFCONTENT="${INCLFCONTENT//&/\\&}"
         TPLCONTENT="${TPLCONTENT//$empty/$INCLFCONTENT}"
     done
-    
+
     # DATA MODULES
     # It currently break if you have more then one per page. Grep is not the right tool.
     # In your HTML markup, use <!--#module:test.csv#template:_include/_block.html-->
@@ -87,39 +75,41 @@ function prerenderTemplate {
     # The values in the csv are applied to the variabled in the template
     # For example, the values in the column "name" in the csv will remplate {{name}} templates
     # ---------------------------------------------------------------
-    local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*#parent:.*}}')
+    local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*}}')
+    # local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*#parent:.*}}')
     for empty in $MODULES; do
         local MODDATA=$(echo -n "$empty"|grep -Po '(?<=#data:).*?(?=#template:)')
-        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=#parent:)')
-        local parent=$(echo -n "$empty"|grep -Po '(?<=#parent:).*?(?=}})')
-        
+        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*(?=}})')
+        # local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=#parent:)')
+        # local parent=$(echo -n "$empty"|grep -Po '(?<=#parent:).*?(?=}})')
+
         # Load the data file (csv) and iterate over it
         local MODdataFile="${templateDir}/$MODDATA"
         local dataOutput="$(<$MODdataFile)"
         dataOutput="${dataOutput//&/$replacementString}"
-        
+
         local MODTPLTFILE="${templateDir}/$MODTPLT"
 
         # Map the csv file to a 1D array, one row per line
         # IFS=$'\n' mapfile -t csvArray < $MODdataFile
         IFS=$'\n' mapfile -t csvArray < <(printf "$dataOutput")
-        
+
         # Store the keys in an array for later (the first line of the csv file)
         IFS='|' read -ra keyArray <<< "${csvArray[0]}"
 
-        MODOUTPUT="<div class="$parent">"
+        # MODOUTPUT="<div class="$parent">"
         for ((i = 1; i < ${#csvArray[@]}; ++i)); do
             IFS='|' read -ra valuesArray <<< "${csvArray[$i]}"
             local templateOutput="$(<$MODTPLTFILE)"
             templateOutput="${templateOutput//&/$replacementString}"
-            
+
             for ((j = 0; j < ${#valuesArray[@]}; ++j)); do
                 templateOutput="${templateOutput//\{\{${keyArray[$j]}\}\}/${valuesArray[$j]}}"
             done
             MODOUTPUT+="$templateOutput"
         done
-        MODOUTPUT+="</div>"
-        
+        # MODOUTPUT+="</div>"
+
         MODOUTPUT="${MODOUTPUT//$replacementString/&}"
         TPLCONTENT="${TPLCONTENT//$empty/$MODOUTPUT}"
     done
@@ -136,6 +126,18 @@ function prerenderTemplate {
         TPLCONTENT="${TPLCONTENT//$empty/$OUTPUTCONTENT}"
     done
 
+    # MARKDOWN
+    # Render markdown file inline
+    # Example: <!--#markdown:README.md-->
+    # ---------------------------------------------------------------
+    local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
+    for empty in $MDS; do
+        local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
+        local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
+        MDCONTENT="${MDCONTENT//&/$replacementString}"
+        TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
+    done
+
     IFS="$OLDIFS"
     echo -n -e "$TPLCONTENT"
 }
@@ -146,7 +148,7 @@ function renderTemplate {
     local L=''
     OLDIFS="$IFS"
     IFS=$'\n'
-    
+
     # Local variables with <!--#set-->
     for L in $SETS; do
         local SET=$(echo -n "$L"|grep -Po '(?<=#set:).*?(?=}})')
@@ -155,7 +157,7 @@ function renderTemplate {
         TPLTEXT="${TPLTEXT//$L/}"
         TPLTEXT="${TPLTEXT//\{\{${SETVAR}\}\}/${SETVAL}}"
     done
-    
+
     # Global variables from the dataFile
     DATALIST="$(<$dataFile)"
     for DATA in $DATALIST; do
@@ -169,7 +171,7 @@ function renderTemplate {
 
     # remove empty lines
     local TPLTEXT=$(echo -n "$TPLTEXT"|grep -v '^$')
-    
+
     IFS="$OLDIFS"
     echo -n -e "$TPLTEXT"
 }
@@ -200,7 +202,7 @@ done
 
 IFS="$OLDIFS"
 
-# "deploy" the files to my dropbox 
+# "deploy" the files to my dropbox
 # dropboxDir='/home/lobau/Dropbox/Apps/Blot/smoosh.sh/'
 # rm -rf "${dropboxDir}"/*
 # cp -rd "${outputDir}"/* "$dropboxDir"

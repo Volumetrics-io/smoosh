@@ -67,4 +67,3 @@ Just run the command in the base directory (where `source/` and `output/` are):
 ```
 
 Everything but asset directory is mandatory here. If `<asset directory>` is not specified, output will contain just the generated HTML tree and nothing else will be copied. If `<output directory>` doesn't exist, it will be created, **but if it does and is not empty, it will be completely overwritten, so be careful!** After the build completes, you can transfer the output directory contents wherever you want to host it.
-
