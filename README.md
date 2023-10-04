@@ -1,6 +1,12 @@
+<<<<<<< HEAD
+# 🔨 Smoo.sh
+
+Smoo.sh is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets.
+=======
 # 🔨 Smoosh.sh
 
 Smoosh is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets.
+>>>>>>> main
 This script is heavily based off [Statix](https://gist.github.com/plugnburn/c2f7cc3807e8934b179e). Here are the high-level features:
 
 | Feature                                                                | How?                                      |
@@ -17,6 +23,13 @@ This script is heavily based off [Statix](https://gist.github.com/plugnburn/c2f7
 
 ---
 
+<<<<<<< HEAD
+# 🍏 Sma.sh
+
+Smoo.sh for macOS!
+
+=======
+>>>>>>> main
 # Data files and folders
 
 - __routes.conf__: a file that maps each publicly accessible template to a SEO-friendly URL
@@ -64,6 +77,12 @@ Just run the command in the base directory (where `source/` and `output/` are):
 
 ```bash
 ./smoosh.sh
+```
+
+or for macOS
+
+```bash
+./sma.sh
 ```
 
 Everything but asset directory is mandatory here. If `<asset directory>` is not specified, output will contain just the generated HTML tree and nothing else will be copied. If `<output directory>` doesn't exist, it will be created, **but if it does and is not empty, it will be completely overwritten, so be careful!** After the build completes, you can transfer the output directory contents wherever you want to host it.
