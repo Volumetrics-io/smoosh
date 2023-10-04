@@ -1,6 +1,6 @@
-# 🔨 Smoosh.sh
+# 🔨 Smoo.sh
 
-Smoosh is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets.
+Smoo.sh is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets.
 This script is heavily based off [Statix](https://gist.github.com/plugnburn/c2f7cc3807e8934b179e). Here are the high-level features:
 
 | Feature                                                                | How?                                      |
@@ -16,6 +16,10 @@ This script is heavily based off [Statix](https://gist.github.com/plugnburn/c2f7
 | TODO:Generate sitemap.xml                                              | Automatic                                 |
 
 ---
+
+# 🍏 Sma.sh
+
+Smoo.sh for macOS!
 
 # Data files and folders
 
