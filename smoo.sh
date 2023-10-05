@@ -39,10 +39,25 @@ templateDir='source'
 outputDir='public'
 assetDir='source/static'
 postsDir='source/posts'
+postTemplateHeader='_post_header.html'
+postTemplateFooter='_post_footer.html'
 
+# Pandoc is the only dependency beyond GNU
 if ! command -v "pandoc" &> /dev/null; then
-    echo -e "⚠️ Pandoc not installed!\n"
+    echo -e "🚨 Pandoc not installed!\n"
     exit 1
+fi
+
+# Support for macOS
+if [[ $OSTYPE == 'darwin'* ]]; then
+    if ! command -v "ggrep" &> /dev/null; then
+        if ! command -v "brew" &> /dev/null; then
+            echo -e "🚨 Brew not installed!\n"
+            exit 1
+        fi
+        brew install grep
+        alias grep=ggrep
+    fi
 fi
 
 # Avoid "&" to be interpreted by bash
@@ -133,6 +148,60 @@ function prerenderTemplate {
         TPLCONTENT="${TPLCONTENT//$empty/$OUTPUTCONTENT}"
     done
 
+    # POSTS LIST
+    # List of all the posts in the folder defined as postsDir as a <ul>
+    # Example: {{#posts:0}}
+    # ---------------------------------------------------------------
+    local POSTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#posts:.*}}')
+    for empty in $POSTS; do
+        local POSTSLISTCONTENT="<ul>"
+        local postCount=$(echo -n "$empty"|grep -Po '(?<=#posts:).*?(?=}})')
+        local iteration=0
+        # echo $postCount
+        for folder in "$postsDir"/*
+        do
+            if [[ -d $folder ]]; then
+                # if a limiter is passed as {{#posts:3}} for the most recent 3 posts
+                if((postCount != 0)); then
+                    if ((iteration >= $postCount)); then
+                        break  # Exit the loop when the maximum iterations are reached
+                    fi
+                    ((iteration++))
+                fi
+
+                # Extract the file name
+                file_name=$(basename -- "$folder")
+                # Remove the extension. This is our route (slug)
+                # slug="$(echo "${file_name%.*}")"
+
+                # Extract frontmatter & remove the first and last lines (---)
+                frontmatter=$(sed -n '/---/,/---/p' "$postsDir/$file_name/article.md" | sed '1d;$d')
+
+                # The array holding the frontmatter variables
+                declare -A data
+
+                while IFS= read -r line; do
+                    # Extract key and value, splitting by ":"
+                    IFS=":" read -r key value <<< "$line"
+
+                    # Trim leading and trailing whitespace from the key and value
+                    key=$(echo "$key" | xargs)
+                    value=$(echo "$value" | xargs)
+
+                    # Store the key-value pair in the associative array
+                    data["$key"]="$value"
+                done <<< "$frontmatter"
+
+                local li_string="<li><img src='/posts/$file_name/${data[preview]}' style='width: 100px' /><a href='/posts/$file_name/'>${data[title]}</a> by ${data[author]} on ${data[date]}</li>\n"
+                POSTSLISTCONTENT="$POSTSLISTCONTENT\n$li_string"
+            fi
+
+        done
+        POSTSLISTCONTENT="$POSTSLISTCONTENT\n</ul>"
+        TPLCONTENT="${TPLCONTENT//$empty/$POSTSLISTCONTENT}"
+    done
+
+
     # MARKDOWN
     # Render markdown file inline
     # Example: <!--#markdown:README.md-->
@@ -143,39 +212,6 @@ function prerenderTemplate {
         local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
         MDCONTENT="${MDCONTENT//&/$replacementString}"
         TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
-    done
-
-    # POSTS LIST
-    # List of all the posts in the folder defined as postsDir as a <ul>
-    # Example: {{#posts}}
-    # ---------------------------------------------------------------
-    local POSTS=$(echo -n "$TPLCONTENT"|grep -Po '{{#posts}}')
-    for empty in $POSTS; do
-        local POSTSLISTCONTENT="<ul>"
-        for file in "$postsDir"/*
-        do
-            # Extract the file name
-            file_name=$(basename -- "$file")
-            # Need to generate the html files
-            # Proposal:
-            # slug-of-the-article.md → /blog/slug-of-the-article/
-            # copy /posts/assets/ to public folder to separate?
-            # Then need to:
-            # Extract frontmatter?
-            # Need: author, preview, synopsis, misc opengraph
-            # Generate the html from the markdown
-            # Add the opengraph
-            # Sandwitch markup with nav and footer
-
-            # WARNING: all this should be done somewhere else
-            # otherwise it will happen for every {{#posts}} in the html
-            # It should only happen once
-
-            local li_string="<li>$file_name</li>\n"
-            POSTSLISTCONTENT="$POSTSLISTCONTENT\n$li_string"
-        done
-        POSTSLISTCONTENT="$POSTSLISTCONTENT\n</ul>"
-        TPLCONTENT="${TPLCONTENT//$empty/$POSTSLISTCONTENT}"
     done
 
     IFS="$OLDIFS"
@@ -231,26 +267,39 @@ IFS=$'\n'
 
 # Generate the blog posts
 mkdir -p "$outputDir/posts/"
-for file in "$postsDir"/*
+for folder in "$postsDir"/*
 do
-    # Extract the file name
-    file_name=$(basename -- "$file")
-    converted_markdown="$(pandoc --columns 100 $file)"
+    if [[ -d $folder ]]; then
+        # Extract the file name
+        folder_name=$(basename -- "$folder")
+        # Remove the extension. This is our route (slug)
+        # slug="$(echo "${file_name%.*}")"
+        # Convert the markdown to HTML
+        converted_markdown="$(pandoc --columns 100 "$folder/article.md")"
 
-    # mkdir -p "$outputDir/posts/$file_name"
-    echo $converted_markdown
+        # postTemplateHeader
+        templateHeader="$(<"$templateDir/$postTemplateHeader")"
+        # templateHeader="$(renderTemplate ${postTemplateHeader})"
+        # templateHeader="${templateHeader//&/$replacementString}"
 
-    # Need to generate the html files
-    # Proposal:
-    # slug-of-the-article.md → /blog/slug-of-the-article/
-    # copy /posts/assets/ to public folder to separate?
-    # Then need to:
-    # Extract frontmatter?
-    # Need: author, preview, synopsis, misc opengraph
-    # Generate the html from the markdown
-    # Add the opengraph
-    # Sandwitch markup with nav and footer
-    # Generate RSS Feed
+        templateFooter="$(<$templateDir/$postTemplateFooter)"
+        # templateFooter="${templateFooter//&/$replacementString}"
+
+        output="$templateHeader$converted_markdown$templateFooter"
+
+        # mkdir -p "$outputDir/posts/$slug"
+        cp -rd "$folder" "${outputDir}/posts/"
+
+        echo $output > "${outputDir}/posts/${folder_name}/index.html"
+        # renderTemplate "${outputDir}/posts/${folder_name}/template.html" > "${outputDir}/posts/${folder_name}/index.html"
+
+        echo "🐥 Generated blog post $(tput bold)$folder$(tput sgr0)"
+        # echo "🐥 Generated blog post $(tput bold)$slug$(tput sgr0)"
+    fi
+
+    # TODO: Add the opengraph
+    # TODO: Sandwitch markup with nav and footer
+    # TODO: Generate RSS Feed
 done
 
 for ROUTE in $ROUTELIST; do

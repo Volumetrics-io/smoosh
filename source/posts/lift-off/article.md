@@ -1,8 +1,9 @@
 ---
+title: Lift Off
 author: Michael Gutensohn
 date: 2023-10-04
-tags: foo, bar, baz
+preview: dark.jpg
 ---
-# Hello World
+# Lift Off
 
 Labore risus mi tortor in lectus ipsum tempus adipiscing sed. Adipiscing dolor cras id nulla ultrices vulputate odio do cursus. Dui incididunt arcu aliquet dui vestibulum sed nibh aliqua eiusmod.

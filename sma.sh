@@ -45,9 +45,11 @@ if ! command -v "md5sum" &> /dev/null; then
     brew install md5sha1sum
 fi
 
-if ! command -v "ggrep" &> /dev/null; then
-    brew install grep
-    alias sed=gsed
+if [[ $OSTYPE == 'darwin'* ]]; then
+    if ! command -v "ggrep" &> /dev/null; then
+        brew install grep
+        alias grep=ggrep
+    fi
 fi
 
 
