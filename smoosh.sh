@@ -38,12 +38,19 @@ dataFile='source/_data.conf'
 templateDir='source'
 outputDir='public'
 assetDir='source/static'
+postsDir='source/posts'
+
+if ! command -v "pandoc" &> /dev/null; then
+    echo -e "⚠️ Pandoc not installed!\n"
+    exit 1
+fi
 
 # Avoid "&" to be interpreted by bash
 # Generate a random remplacement string to temporarely replace
 # the & character while we process all the template files.
 # That avoid bash to interpret the & in our csv, md, or html files
-replacementString=$(echo $RANDOM | md5sum | head -c 20; echo;)
+# replacementString=$(echo $RANDOM | md5sum | head -c 20; echo;)
+replacementString="{{and}}"
 
 function prerenderTemplate {
     local TPLFILE="${templateDir}/$1"
@@ -138,6 +145,39 @@ function prerenderTemplate {
         TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
     done
 
+    # POSTS LIST
+    # List of all the posts in the folder defined as postsDir as a <ul>
+    # Example: {{#posts}}
+    # ---------------------------------------------------------------
+    local POSTS=$(echo -n "$TPLCONTENT"|grep -Po '{{#posts}}')
+    for empty in $POSTS; do
+        local POSTSLISTCONTENT="<ul>"
+        for file in "$postsDir"/*
+        do
+            # Extract the file name
+            file_name=$(basename -- "$file")
+            # Need to generate the html files
+            # Proposal:
+            # slug-of-the-article.md → /blog/slug-of-the-article/
+            # copy /posts/assets/ to public folder to separate?
+            # Then need to:
+            # Extract frontmatter?
+            # Need: author, preview, synopsis, misc opengraph
+            # Generate the html from the markdown
+            # Add the opengraph
+            # Sandwitch markup with nav and footer
+
+            # WARNING: all this should be done somewhere else
+            # otherwise it will happen for every {{#posts}} in the html
+            # It should only happen once
+
+            local li_string="<li>$file_name</li>\n"
+            POSTSLISTCONTENT="$POSTSLISTCONTENT\n$li_string"
+        done
+        POSTSLISTCONTENT="$POSTSLISTCONTENT\n</ul>"
+        TPLCONTENT="${TPLCONTENT//$empty/$POSTSLISTCONTENT}"
+    done
+
     IFS="$OLDIFS"
     echo -n -e "$TPLCONTENT"
 }
@@ -188,6 +228,31 @@ ROUTELIST="$(<$routeFile)"
 OLDIFS="$IFS"
 IFS=$'\n'
 
+
+# Generate the blog posts
+mkdir -p "$outputDir/posts/"
+for file in "$postsDir"/*
+do
+    # Extract the file name
+    file_name=$(basename -- "$file")
+    converted_markdown="$(pandoc --columns 100 $file)"
+
+    # mkdir -p "$outputDir/posts/$file_name"
+    echo $converted_markdown
+
+    # Need to generate the html files
+    # Proposal:
+    # slug-of-the-article.md → /blog/slug-of-the-article/
+    # copy /posts/assets/ to public folder to separate?
+    # Then need to:
+    # Extract frontmatter?
+    # Need: author, preview, synopsis, misc opengraph
+    # Generate the html from the markdown
+    # Add the opengraph
+    # Sandwitch markup with nav and footer
+    # Generate RSS Feed
+done
+
 for ROUTE in $ROUTELIST; do
     TPLNAME="${ROUTE%%:*}"
     TPLPATH="${ROUTE#*:}"
@@ -201,11 +266,4 @@ for ROUTE in $ROUTELIST; do
 done
 
 IFS="$OLDIFS"
-
-# "deploy" the files to my dropbox
-# dropboxDir='/home/lobau/Dropbox/Apps/Blot/smoosh.sh/'
-# rm -rf "${dropboxDir}"/*
-# cp -rd "${outputDir}"/* "$dropboxDir"
-# echo "🔄 Copied to ${dropboxDir}"
-
 echo -e "🎀 The website is ready!\n"

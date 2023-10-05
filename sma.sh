@@ -47,6 +47,7 @@ fi
 
 if ! command -v "ggrep" &> /dev/null; then
     brew install grep
+    alias sed=gsed
 fi
 
 
