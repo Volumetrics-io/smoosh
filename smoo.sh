@@ -338,9 +338,10 @@ do
             data["$key"]="$value"
         done <<< "$frontmatter"
 
+        previewURL="$folder_name/${data[preview]}"
         templateOutput="${templateOutput//\{\{title\}\}/${data[title]}}"
         templateOutput="${templateOutput//\{\{description\}\}/${data[desc]}}"
-        templateOutput="${templateOutput//\{\{previewImage\}\}/${data[preview]}}"
+        templateOutput="${templateOutput//\{\{previewImage\}\}/${previewURL}}"
 
         # Copy the folder, since it might contain assets
         cp -rd "$folder" "${outputDir}/posts/"
