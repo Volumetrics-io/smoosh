@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
 
 {{#set:title=Hi there 👋}}
-{{#set:description=This website is generated using the bash script smoo.sh.}}
+{{#set:description=This is the home page}}
 {{#set:previewImage=static/light.jpg}}
 {{#include:source/_include/_head.html}}
 
@@ -17,7 +17,9 @@
 
   <section>
     <h2>Latest Posts (limit == 3)</h2>
-    {{#posts:3}}
+    <div class="grid">
+      {{#posts:3}}
+    </div>
   </section>
 
   <section>

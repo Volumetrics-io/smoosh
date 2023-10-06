@@ -39,7 +39,6 @@ templateDir='source'
 outputDir='public'
 assetDir='source/static'
 postsDir='source/posts'
-postTemplateFooter='_post_footer.html'
 postTemplate='_post_template.html'
 
 # Pandoc is the only dependency beyond GNU
@@ -191,12 +190,24 @@ function prerenderTemplate {
                     data["$key"]="$value"
                 done <<< "$frontmatter"
 
-                local li_string="<div>
-                <img src='/posts/$file_name/${data[preview]}' style='width: 100px; aspect-ratio: 5 / 3;' />
-                  <p><a href='/posts/$file_name/'>${data[title]}</a> by ${data[author]} on ${data[date]}</p>
-                  <p>${data[desc]}</p>
-                </div>\n"
-                POSTSLISTCONTENT="$POSTSLISTCONTENT\n$li_string"
+                local post_string="$(<'source/_include/_post.html')"
+                link="/posts/$file_name/"
+                # echo $post_string
+
+                previewURL="/posts/$file_name/${data[preview]}"
+                post_string="${post_string//\{\{title\}\}/${data[title]}}"
+                post_string="${post_string//\{\{author\}\}/${data[author]}}"
+                post_string="${post_string//\{\{date\}\}/${data[date]}}"
+                post_string="${post_string//\{\{description\}\}/${data[desc]}}"
+                post_string="${post_string//\{\{previewImage\}\}/${previewURL}}"
+                post_string="${post_string//\{\{link\}\}/${link}}"
+
+                # local li_string="<div>
+                # <img src='/posts/$file_name/${data[preview]}' style='width: 100px; aspect-ratio: 5 / 3;' />
+                #   <p><a href='/posts/$file_name/'>${data[title]}</a> by ${data[author]} on ${data[date]}</p>
+                #   <p>${data[desc]}</p>
+                # </div>\n"
+                POSTSLISTCONTENT="$POSTSLISTCONTENT\n$post_string"
             fi
 
         done

@@ -6,7 +6,7 @@
 {{#set:previewImage=static/light.jpg}}
 {{#include:source/_include/_head.html}}
 
-<style>
+<!-- <style>
   #portfolio {
     list-style-type: none;
     display: grid;
@@ -29,7 +29,7 @@
     margin-bottom: 0;
   }
 
-</style>
+</style> -->
 
 <body>
   {{#include:source/_include/_nav.html}}
@@ -40,7 +40,7 @@
     <p><a href="#markup">Scroll to code</a></p>
   </header>
 
-  <section id="portfolio">
+  <section class="grid">
     {{#data:portfolio.csv#template:_include/_tile.html}}
   </section>
 
