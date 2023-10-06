@@ -68,11 +68,8 @@ fi
 replacementString="{{and}}"
 
 function prerenderTemplate {
-    # local TPLFILE="$1"
-    # local TPLCONTENT="$(<$TPLFILE)"
-    # echo "$1"
-    local TPLCONTENT="$(echo -n $1 | tr -d '\n')"
-    # local TPLCONTENT=$1
+    local TPLFILE="${templateDir}/$1"
+    local TPLCONTENT="$(<$TPLFILE)"
     local empty=''
 
     TPLCONTENT="${TPLCONTENT//&/$replacementString}"
@@ -87,8 +84,7 @@ function prerenderTemplate {
     local INCLUDES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#include:.*}}')
     for empty in $INCLUDES; do
         local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
-        local includeString="$(tr -d "\n\r" < "$INCLFNAME")"
-        local INCLFCONTENT="$(prerenderTemplate ${includeString})"
+        local INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
         # Escape & in the imported content since it's gonna be processed again
         # Might be irrelevant now that we replace all & at the beginning?
         INCLFCONTENT="${INCLFCONTENT//&/\\&}"
@@ -111,7 +107,8 @@ function prerenderTemplate {
         # local parent=$(echo -n "$empty"|grep -Po '(?<=#parent:).*?(?=}})')
 
         # Load the data file (csv) and iterate over it
-        local MODdataFile="${templateDir}/$MODDATA"
+        # local MODdataFile="${templateDir}/$MODDATA"
+        local MODdataFile="/$MODDATA"
         local dataOutput="$(<$MODdataFile)"
         dataOutput="${dataOutput//&/$replacementString}"
 
@@ -176,6 +173,8 @@ function prerenderTemplate {
 
                 # Extract the file name
                 file_name=$(basename -- "$folder")
+                # Remove the extension. This is our route (slug)
+                # slug="$(echo "${file_name%.*}")"
 
                 # Extract frontmatter & remove the first and last lines (---)
                 frontmatter=$(sed -n '/---/,/---/p' "$postsDir/$file_name/article.md" | sed '1d;$d')
@@ -204,6 +203,7 @@ function prerenderTemplate {
         TPLCONTENT="${TPLCONTENT//$empty/$POSTSLISTCONTENT}"
     done
 
+
     # MARKDOWN
     # Render markdown file inline
     # Example: <!--#markdown:README.md-->
@@ -221,7 +221,6 @@ function prerenderTemplate {
 }
 
 function renderTemplate {
-    # echo "$1"
     local TPLTEXT="$(prerenderTemplate $1)"
     local SETS=$(echo -n "$TPLTEXT"|grep -Po '{{#set:.*?}}')
     local L=''
@@ -278,18 +277,18 @@ do
         # Convert the markdown to HTML
         converted_markdown="$(pandoc --columns 100 "$folder/article.md")"
 
+
+
         templateOutput="$(<"$templateDir/$postTemplate")"
         templateOutput="${templateOutput//\{\{#slot\}\}/${converted_markdown}}"
 
         # Copy the folder, since it might contain assets
         cp -rd "$folder" "${outputDir}/posts/"
+        echo $templateOutput > "${outputDir}/posts/${folder_name}/index.html"
 
-        # echo $templateOutput > "${outputDir}/posts/${folder_name}/index.html"
-        renderTemplate "$templateOutput" > "${outputDir}/posts/${folder_name}/index.html"
-
-        chars=🎄🌲🌳🌴🎋
+        chars=🎉🎊🎋🎄
         emoji="${chars:RANDOM%${#chars}:1}"
-        echo "$emoji Generated blog post $(tput bold)$folder_name$(tput sgr0)"
+        echo "$emoji Generated blog post $(tput bold)$folder$(tput sgr0)"
     fi
 
     # TODO: Add the opengraph
@@ -302,11 +301,7 @@ for ROUTE in $ROUTELIST; do
     TPLPATH="${ROUTE#*:}"
     if [[ "$TPLNAME" && "$TPLPATH" ]]; then
         mkdir -p "${outputDir}${TPLPATH}"
-        renderString="$(tr -d "\n\r" < "$templateDir/$TPLNAME")"
-        # echo $renderString
-        rendered=$(renderTemplate "$renderString")
-        echo "$rendered" > "${outputDir}${TPLPATH}index.html"
-        echo "$rendered"
+        renderTemplate "$TPLNAME" > "${outputDir}${TPLPATH}index.html"
         chars=✨🌟⭐💫
         emoji="${chars:RANDOM%${#chars}:1}"
         echo "$emoji Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"
