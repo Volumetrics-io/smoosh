@@ -192,7 +192,7 @@ function prerenderTemplate {
                 done <<< "$frontmatter"
 
                 local li_string="<div>
-                <img src='/posts/$file_name/${data[preview]}' style='width: 100px' />
+                <img src='/posts/$file_name/${data[preview]}' style='width: 100px; aspect-ratio: 5 / 3;' />
                   <p><a href='/posts/$file_name/'>${data[title]}</a> by ${data[author]} on ${data[date]}</p>
                   <p>${data[desc]}</p>
                 </div>\n"
@@ -348,7 +348,7 @@ do
 
         echo $templateOutput > "${outputDir}/posts/${folder_name}/index.html"
 
-        chars=🎄🌲🌳🌴🎋
+        chars=🎄🌲🌳🌴🎋🌿🪴🌱🍀
         emoji="${chars:RANDOM%${#chars}:1}"
         echo "$emoji Generated blog post $(tput bold)$folder_name$(tput sgr0)"
     fi

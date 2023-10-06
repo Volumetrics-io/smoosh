@@ -4,7 +4,7 @@
     <title>{{sitename}} · {{title}}</title>
 
     <!-- Stylesheet -->
-    <link type="text/css" rel="stylesheet" href="/static/style.css" />
+    <!-- <link type="text/css" rel="stylesheet" href="/static/style.css" /> -->
     <link href="data:image/x-icon;base64,=" rel="icon" type="image/x-icon" />
     <link rel="icon" type="image/svg" href="/static/favicon.svg" />
 
@@ -25,4 +25,7 @@
     <meta content="{{description}}" property="og:description" class="next-head" />
     <meta content="{{sitename}}" property="og:site_name" class="next-head" />
 
+    <style>
+      {{#include:source/static/style.css}}
+    </style>
 </head>
