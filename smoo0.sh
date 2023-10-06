@@ -68,7 +68,7 @@ fi
 replacementString="{{and}}"
 
 function prerenderTemplate {
-    local TPLFILE="${templateDir}/$1"
+    local TPLFILE="$1"
     local TPLCONTENT="$(<$TPLFILE)"
     local empty=''
 
@@ -107,8 +107,7 @@ function prerenderTemplate {
         # local parent=$(echo -n "$empty"|grep -Po '(?<=#parent:).*?(?=}})')
 
         # Load the data file (csv) and iterate over it
-        # local MODdataFile="${templateDir}/$MODDATA"
-        local MODdataFile="/$MODDATA"
+        local MODdataFile="${templateDir}/$MODDATA"
         local dataOutput="$(<$MODdataFile)"
         dataOutput="${dataOutput//&/$replacementString}"
 
@@ -173,8 +172,6 @@ function prerenderTemplate {
 
                 # Extract the file name
                 file_name=$(basename -- "$folder")
-                # Remove the extension. This is our route (slug)
-                # slug="$(echo "${file_name%.*}")"
 
                 # Extract frontmatter & remove the first and last lines (---)
                 frontmatter=$(sed -n '/---/,/---/p' "$postsDir/$file_name/article.md" | sed '1d;$d')
@@ -277,18 +274,17 @@ do
         # Convert the markdown to HTML
         converted_markdown="$(pandoc --columns 100 "$folder/article.md")"
 
-
-
         templateOutput="$(<"$templateDir/$postTemplate")"
         templateOutput="${templateOutput//\{\{#slot\}\}/${converted_markdown}}"
 
         # Copy the folder, since it might contain assets
         cp -rd "$folder" "${outputDir}/posts/"
+
         echo $templateOutput > "${outputDir}/posts/${folder_name}/index.html"
 
-        chars=🎉🎊🎋🎄
+        chars=🎄🌲🌳🌴🎋
         emoji="${chars:RANDOM%${#chars}:1}"
-        echo "$emoji Generated blog post $(tput bold)$folder$(tput sgr0)"
+        echo "$emoji Generated blog post $(tput bold)$folder_name$(tput sgr0)"
     fi
 
     # TODO: Add the opengraph
@@ -301,7 +297,7 @@ for ROUTE in $ROUTELIST; do
     TPLPATH="${ROUTE#*:}"
     if [[ "$TPLNAME" && "$TPLPATH" ]]; then
         mkdir -p "${outputDir}${TPLPATH}"
-        renderTemplate "$TPLNAME" > "${outputDir}${TPLPATH}index.html"
+        renderTemplate "$templateDir/$TPLNAME" > "${outputDir}${TPLPATH}index.html"
         chars=✨🌟⭐💫
         emoji="${chars:RANDOM%${#chars}:1}"
         echo "$emoji Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"

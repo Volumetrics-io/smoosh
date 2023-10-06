@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
+
+{{#set:title=About me}}
+{{#set:description=Sample about page}}
+{{#include:source/_include/_head.html}}
+
+    <body>
+        {{#include:source/_include/_nav.html}}
+        <section>
+            <a href="/">Back</a>
+            {{#slot}}
+            <a href="/posts/">More articles</a>
+        </section>
+        {{#include:source/_include/_footer.html}}
+    </body>
+
+</html>

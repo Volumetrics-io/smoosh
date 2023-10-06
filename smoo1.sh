@@ -38,30 +38,41 @@ dataFile='source/_data.conf'
 templateDir='source'
 outputDir='public'
 assetDir='source/static'
+postsDir='source/posts'
+postTemplateFooter='_post_footer.html'
+postTemplate='_post_template.html'
 
-# check if md5sum is installed, if not, install it
-
-if ! command -v "md5sum" &> /dev/null; then
-    brew install md5sha1sum
+# Pandoc is the only dependency beyond GNU
+if ! command -v "pandoc" &> /dev/null; then
+    echo -e "🚨 Pandoc not installed!\n"
+    exit 1
 fi
 
+# Support for macOS
 if [[ $OSTYPE == 'darwin'* ]]; then
     if ! command -v "ggrep" &> /dev/null; then
+        if ! command -v "brew" &> /dev/null; then
+            echo -e "🚨 Brew not installed!\n"
+            exit 1
+        fi
         brew install grep
         alias grep=ggrep
     fi
 fi
 
-
 # Avoid "&" to be interpreted by bash
 # Generate a random remplacement string to temporarely replace
 # the & character while we process all the template files.
 # That avoid bash to interpret the & in our csv, md, or html files
-replacementString=$(echo $RANDOM | md5sum | head -c 20; echo;)
+# replacementString=$(echo $RANDOM | md5sum | head -c 20; echo;)
+replacementString="{{and}}"
 
 function prerenderTemplate {
-    local TPLFILE="${templateDir}/$1"
-    local TPLCONTENT="$(<$TPLFILE)"
+    # local TPLFILE="$1"
+    # local TPLCONTENT="$(<$TPLFILE)"
+    # echo "$1"
+    local TPLCONTENT="$(echo -n $1 | tr -d '\n')"
+    # local TPLCONTENT=$1
     local empty=''
 
     TPLCONTENT="${TPLCONTENT//&/$replacementString}"
@@ -73,11 +84,13 @@ function prerenderTemplate {
     # Most common case is to include footer, or navigation
     # Example: <!--#include:_include/_footer.html-->
     # ---------------------------------------------------------------
-    local INCLUDES=$(echo -n "$TPLCONTENT"|ggrep -Po '{{\s*#include:.*}}')
+    local INCLUDES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#include:.*}}')
     for empty in $INCLUDES; do
-        local INCLFNAME=$(echo -n "$empty"|ggrep -Po '(?<=#include:).*?(?=}})')
-        local INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
+        local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
+        local includeString="$(tr -d "\n\r" < "$INCLFNAME")"
+        local INCLFCONTENT="$(prerenderTemplate ${includeString})"
         # Escape & in the imported content since it's gonna be processed again
+        # Might be irrelevant now that we replace all & at the beginning?
         INCLFCONTENT="${INCLFCONTENT//&/\\&}"
         TPLCONTENT="${TPLCONTENT//$empty/$INCLFCONTENT}"
     done
@@ -89,13 +102,13 @@ function prerenderTemplate {
     # The values in the csv are applied to the variabled in the template
     # For example, the values in the column "name" in the csv will remplate {{name}} templates
     # ---------------------------------------------------------------
-    local MODULES=$(echo -n "$TPLCONTENT"|ggrep -Po '{{\s*#data:.*#template:.*}}')
-    # local MODULES=$(echo -n "$TPLCONTENT"|ggrep -Po '{{\s*#data:.*#template:.*#parent:.*}}')
+    local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*}}')
+    # local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*#parent:.*}}')
     for empty in $MODULES; do
-        local MODDATA=$(echo -n "$empty"|ggrep -Po '(?<=#data:).*?(?=#template:)')
-        local MODTPLT=$(echo -n "$empty"|ggrep -Po '(?<=#template:).*(?=}})')
-        # local MODTPLT=$(echo -n "$empty"|ggrep -Po '(?<=#template:).*?(?=#parent:)')
-        # local parent=$(echo -n "$empty"|ggrep -Po '(?<=#parent:).*?(?=}})')
+        local MODDATA=$(echo -n "$empty"|grep -Po '(?<=#data:).*?(?=#template:)')
+        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*(?=}})')
+        # local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=#parent:)')
+        # local parent=$(echo -n "$empty"|grep -Po '(?<=#parent:).*?(?=}})')
 
         # Load the data file (csv) and iterate over it
         local MODdataFile="${templateDir}/$MODDATA"
@@ -106,15 +119,7 @@ function prerenderTemplate {
 
         # Map the csv file to a 1D array, one row per line
         # IFS=$'\n' mapfile -t csvArray < $MODdataFile
-        # IFS=$'\n' mapfile -t csvArray < <(printf "$dataOutput")
-
-        # Declare an array
-        csvArray=()
-
-        # Read lines from a file into the array
-        while IFS= read -r line; do
-            csvArray+=("$line")
-        done <<< "$dataOutput"
+        IFS=$'\n' mapfile -t csvArray < <(printf "$dataOutput")
 
         # Store the keys in an array for later (the first line of the csv file)
         IFS='|' read -ra keyArray <<< "${csvArray[0]}"
@@ -141,20 +146,71 @@ function prerenderTemplate {
     # Can be used in footer for copyright info for example
     # <!--#bash:date +"%Y"--> — All Rights Reserved
     # ---------------------------------------------------------------
-    local SCRIPTS=$(echo -n "$TPLCONTENT"|ggrep -Po '{{\s*#bash:.*}}')
+    local SCRIPTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#bash:.*}}')
     for empty in $SCRIPTS; do
-        local COMMAND=$(echo -n "$empty"|ggrep -Po '(?<=#bash:).*?(?=}})')
+        local COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=}})')
         local OUTPUTCONTENT=$(eval $COMMAND)
         TPLCONTENT="${TPLCONTENT//$empty/$OUTPUTCONTENT}"
+    done
+
+    # POSTS LIST
+    # List of all the posts in the folder defined as postsDir as a <ul>
+    # Example: {{#posts:0}}
+    # ---------------------------------------------------------------
+    local POSTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#posts:.*}}')
+    for empty in $POSTS; do
+        local POSTSLISTCONTENT=""
+        local postCount=$(echo -n "$empty"|grep -Po '(?<=#posts:).*?(?=}})')
+        local iteration=0
+        # echo $postCount
+        for folder in "$postsDir"/*
+        do
+            if [[ -d $folder ]]; then
+                # if a limiter is passed as {{#posts:3}} for the most recent 3 posts
+                if((postCount != 0)); then
+                    if ((iteration >= $postCount)); then
+                        break  # Exit the loop when the maximum iterations are reached
+                    fi
+                    ((iteration++))
+                fi
+
+                # Extract the file name
+                file_name=$(basename -- "$folder")
+
+                # Extract frontmatter & remove the first and last lines (---)
+                frontmatter=$(sed -n '/---/,/---/p' "$postsDir/$file_name/article.md" | sed '1d;$d')
+
+                # The array holding the frontmatter variables
+                declare -A data
+
+                while IFS= read -r line; do
+                    # Extract key and value, splitting by ":"
+                    IFS=":" read -r key value <<< "$line"
+
+                    # Trim leading and trailing whitespace from the key and value
+                    key=$(echo "$key" | xargs)
+                    value=$(echo "$value" | xargs)
+
+                    # Store the key-value pair in the associative array
+                    data["$key"]="$value"
+                done <<< "$frontmatter"
+
+                local li_string="<div><img src='/posts/$file_name/${data[preview]}' style='width: 100px' /><a href='/posts/$file_name/'>${data[title]}</a> by ${data[author]} on ${data[date]}</div>\n"
+                POSTSLISTCONTENT="$POSTSLISTCONTENT\n$li_string"
+            fi
+
+        done
+        POSTSLISTCONTENT="$POSTSLISTCONTENT\n"
+        TPLCONTENT="${TPLCONTENT//$empty/$POSTSLISTCONTENT}"
     done
 
     # MARKDOWN
     # Render markdown file inline
     # Example: <!--#markdown:README.md-->
     # ---------------------------------------------------------------
-    local MDS=$(echo -n "$TPLCONTENT"|ggrep -Po '{{\s*#markdown:.*}}')
+    local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
     for empty in $MDS; do
-        local MDNAME=$(echo -n "$empty"|ggrep -Po '(?<=#markdown:).*?(?=}})')
+        local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
         local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
         MDCONTENT="${MDCONTENT//&/$replacementString}"
         TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
@@ -165,15 +221,16 @@ function prerenderTemplate {
 }
 
 function renderTemplate {
+    # echo "$1"
     local TPLTEXT="$(prerenderTemplate $1)"
-    local SETS=$(echo -n "$TPLTEXT"|ggrep -Po '{{#set:.*?}}')
+    local SETS=$(echo -n "$TPLTEXT"|grep -Po '{{#set:.*?}}')
     local L=''
     OLDIFS="$IFS"
     IFS=$'\n'
 
     # Local variables with <!--#set-->
     for L in $SETS; do
-        local SET=$(echo -n "$L"|ggrep -Po '(?<=#set:).*?(?=}})')
+        local SET=$(echo -n "$L"|grep -Po '(?<=#set:).*?(?=}})')
         local SETVAR="${SET%%=*}"
         local SETVAL="${SET#*=}"
         TPLTEXT="${TPLTEXT//$L/}"
@@ -203,19 +260,53 @@ mkdir -p "$outputDir"
 rm -rf "${outputDir}"/*
 echo -e "🧹 Cleaned up $(tput bold)/$outputDir/$(tput sgr0) folder"
 if [[ "$assetDir" ]]; then
-    cp -R "$assetDir" "${outputDir}/"
+    cp -rd "$assetDir" "${outputDir}/"
     echo "📦️ Copied $(tput bold)/$assetDir/$(tput sgr0) assets folder"
 fi
 ROUTELIST="$(<$routeFile)"
 OLDIFS="$IFS"
 IFS=$'\n'
 
+
+# Generate the blog posts
+mkdir -p "$outputDir/posts/"
+for folder in "$postsDir"/*
+do
+    if [[ -d $folder ]]; then
+        # Extract the file name
+        folder_name=$(basename -- "$folder")
+        # Convert the markdown to HTML
+        converted_markdown="$(pandoc --columns 100 "$folder/article.md")"
+
+        templateOutput="$(<"$templateDir/$postTemplate")"
+        templateOutput="${templateOutput//\{\{#slot\}\}/${converted_markdown}}"
+
+        # Copy the folder, since it might contain assets
+        cp -rd "$folder" "${outputDir}/posts/"
+
+        # echo $templateOutput > "${outputDir}/posts/${folder_name}/index.html"
+        renderTemplate "$templateOutput" > "${outputDir}/posts/${folder_name}/index.html"
+
+        chars=🎄🌲🌳🌴🎋
+        emoji="${chars:RANDOM%${#chars}:1}"
+        echo "$emoji Generated blog post $(tput bold)$folder_name$(tput sgr0)"
+    fi
+
+    # TODO: Add the opengraph
+    # TODO: Sandwitch markup with nav and footer
+    # TODO: Generate RSS Feed
+done
+
 for ROUTE in $ROUTELIST; do
     TPLNAME="${ROUTE%%:*}"
     TPLPATH="${ROUTE#*:}"
     if [[ "$TPLNAME" && "$TPLPATH" ]]; then
         mkdir -p "${outputDir}${TPLPATH}"
-        renderTemplate "$TPLNAME" > "${outputDir}${TPLPATH}index.html"
+        renderString="$(tr -d "\n\r" < "$templateDir/$TPLNAME")"
+        # echo $renderString
+        rendered=$(renderTemplate "$renderString")
+        echo "$rendered" > "${outputDir}${TPLPATH}index.html"
+        echo "$rendered"
         chars=✨🌟⭐💫
         emoji="${chars:RANDOM%${#chars}:1}"
         echo "$emoji Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"
@@ -223,11 +314,4 @@ for ROUTE in $ROUTELIST; do
 done
 
 IFS="$OLDIFS"
-
-# "deploy" the files to my dropbox
-# dropboxDir='/home/lobau/Dropbox/Apps/Blot/smoosh.sh/'
-# rm -rf "${dropboxDir}"/*
-# cp -rd "${outputDir}"/* "$dropboxDir"
-# echo "🔄 Copied to ${dropboxDir}"
-
 echo -e "🎀 The website is ready!\n"
