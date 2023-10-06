@@ -191,7 +191,11 @@ function prerenderTemplate {
                     data["$key"]="$value"
                 done <<< "$frontmatter"
 
-                local li_string="<div><img src='/posts/$file_name/${data[preview]}' style='width: 100px' /><a href='/posts/$file_name/'>${data[title]}</a> by ${data[author]} on ${data[date]}</div>\n"
+                local li_string="<div>
+                <img src='/posts/$file_name/${data[preview]}' style='width: 100px' />
+                  <p><a href='/posts/$file_name/'>${data[title]}</a> by ${data[author]} on ${data[date]}</p>
+                  <p>${data[desc]}</p>
+                </div>\n"
                 POSTSLISTCONTENT="$POSTSLISTCONTENT\n$li_string"
             fi
 
@@ -219,12 +223,12 @@ function prerenderTemplate {
 
 function renderTemplate {
     local TPLTEXT="$(prerenderTemplate $1)"
+
+    # Local variables with <!--#set-->
     local SETS=$(echo -n "$TPLTEXT"|grep -Po '{{#set:.*?}}')
     local L=''
     OLDIFS="$IFS"
     IFS=$'\n'
-
-    # Local variables with <!--#set-->
     for L in $SETS; do
         local SET=$(echo -n "$L"|grep -Po '(?<=#set:).*?(?=}})')
         local SETVAR="${SET%%=*}"
@@ -276,6 +280,67 @@ do
 
         templateOutput="$(<"$templateDir/$postTemplate")"
         templateOutput="${templateOutput//\{\{#slot\}\}/${converted_markdown}}"
+
+        # Include code copied from render function
+        # TODO: isolate in it's own function
+        INCLUDES=$(echo -n "$templateOutput"|grep -Po '{{\s*#include:.*}}')
+        for empty in $INCLUDES; do
+            INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
+            INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
+            # Escape & in the imported content since it's gonna be processed again
+            # Might be irrelevant now that we replace all & at the beginning?
+            INCLFCONTENT="${INCLFCONTENT//&/\\&}"
+            templateOutput="${templateOutput//$empty/$INCLFCONTENT}"
+        done
+
+        # TODO: This code is duplicated from the render function
+        # All those functions (bash, markdown, include) should be isolated
+        SCRIPTS=$(echo -n "$templateOutput"|grep -Po '{{\s*#bash:.*}}')
+        for empty in $SCRIPTS; do
+            COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=}})')
+            OUTPUTCONTENT=$(eval $COMMAND)
+            templateOutput="${templateOutput//$empty/$OUTPUTCONTENT}"
+        done
+
+        SETS=$(echo -n "$templateOutput"|grep -Po '{{#set:.*?}}')
+        # Local variables with <!--#set-->
+        for empty in $SETS; do
+            local SET=$(echo -n "$empty"|grep -Po '(?<=#set:).*?(?=}})')
+            local SETVAR="${SET%%=*}"
+            local SETVAL="${SET#*=}"
+            templateOutput="${templateOutput//$empty/}"
+            templateOutput="${templateOutput//\{\{${SETVAR}\}\}/${SETVAL}}"
+        done
+
+        # Global variables from the dataFile
+        DATALIST="$(<$dataFile)"
+        for DATA in $DATALIST; do
+            DATANAME="${DATA%%:*}"
+            DATAVAL="${DATA#*:}"
+            templateOutput="${templateOutput//\{\{${DATANAME}\}\}/${DATAVAL}}"
+        done
+
+        # Extract frontmatter & remove the first and last lines (---)
+        frontmatter=$(sed -n '/---/,/---/p' "$folder/article.md" | sed '1d;$d')
+
+        # The array holding the frontmatter variables
+        declare -A data
+
+        while IFS= read -r line; do
+            # Extract key and value, splitting by ":"
+            IFS=":" read -r key value <<< "$line"
+
+            # Trim leading and trailing whitespace from the key and value
+            key=$(echo "$key" | xargs)
+            value=$(echo "$value" | xargs)
+
+            # Store the key-value pair in the associative array
+            data["$key"]="$value"
+        done <<< "$frontmatter"
+
+        templateOutput="${templateOutput//\{\{title\}\}/${data[title]}}"
+        templateOutput="${templateOutput//\{\{description\}\}/${data[desc]}}"
+        templateOutput="${templateOutput//\{\{previewImage\}\}/${data[preview]}}"
 
         # Copy the folder, since it might contain assets
         cp -rd "$folder" "${outputDir}/posts/"

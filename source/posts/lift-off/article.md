@@ -3,6 +3,7 @@ title: Lift Off
 author: Michael Gutensohn
 date: 2023-10-04
 preview: dark.jpg
+desc: Elit egestas nulla enim vulputate proin fermentum a dolor euismod.
 ---
 # Lift Off
 

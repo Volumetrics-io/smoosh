@@ -1,18 +1,44 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
 
-{{#set:title=About me}}
-{{#set:description=Sample about page}}
-{{#include:source/_include/_head.html}}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{sitename}} · {{title}}</title>
 
-    <body>
-        {{#include:source/_include/_nav.html}}
-        <section>
-            <a href="/">Back</a>
-            {{#slot}}
-            <a href="/posts/">More articles</a>
-        </section>
-        {{#include:source/_include/_footer.html}}
-    </body>
+  <!-- Stylesheet -->
+  <link type="text/css" rel="stylesheet" href="/static/style.css" />
+  <link href="data:image/x-icon;base64,=" rel="icon" type="image/x-icon" />
+  <link rel="icon" type="image/svg" href="/static/favicon.svg" />
+
+  <!-- SEO -->
+  <meta name="description" content="{{description}}" />
+  <meta name="keywords" content="{{keywords}}" />
+
+  <!-- Basic Open Graph -->
+  <meta content="{{title}}" itemProp="name" class="next-head" />
+  <meta content="{{description}}" itemProp="description" class="next-head" />
+  <meta content="{{previewImage}}" itemProp="image" class="next-head" />
+
+  <!-- Generic Open Graph -->
+  <meta property="og:type" content="article" class="next-head" />
+  <meta content="{{title}}" property="og:title" class="next-head" />
+  <meta content="{{siteurl}}" property="og:url" class="next-head" />
+  <meta content="{{previewImage}}" property="og:image" class="next-head" />
+  <meta content="{{description}}" property="og:description" class="next-head" />
+  <meta content="{{sitename}}" property="og:site_name" class="next-head" />
+
+</head>
+
+<body>
+  {{#include:source/_include/_nav.html}}
+  <section>
+    {{#slot}}
+  </section>
+  <a href="/posts/">More articles</a>
+  {{#include:source/_include/_footer.html}}
+
+
+</body>
 
 </html>
