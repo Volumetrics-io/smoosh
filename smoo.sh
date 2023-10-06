@@ -289,6 +289,7 @@ do
         # Convert the markdown to HTML
         converted_markdown="$(pandoc --columns 100 "$folder/article.md")"
 
+        # Grab the template and replace {{#slot}} with the generate html
         templateOutput="$(<"$templateDir/$postTemplate")"
         templateOutput="${templateOutput//\{\{#slot\}\}/${converted_markdown}}"
 
@@ -364,8 +365,6 @@ do
         echo "$emoji Generated blog post $(tput bold)$folder_name$(tput sgr0)"
     fi
 
-    # TODO: Add the opengraph
-    # TODO: Sandwitch markup with nav and footer
     # TODO: Generate RSS Feed
 done
 
