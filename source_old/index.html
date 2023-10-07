@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
+
+{{#set:title=Hi there 👋}}
+{{#set:description=This is the home page}}
+{{#set:previewImage=static/light.jpg}}
+{{#include:source/_include/_head.html}}
+
+<body>
+  {{#include:source/_include/_nav.html}}
+
+  <header>
+    <h1>{{title}}</h1>
+    <p>{{description}}</p>
+    <!-- <p><a href="https://gitlab.com/lobau/smash" target="_blank">See the source code</a></p> -->
+  </header>
+
+  <section>
+    <h2>Latest Posts (limit == 3)</h2>
+    <div class="grid">
+      {{#posts:3}}
+    </div>
+  </section>
+
+  <section>
+    {{#markdown:README.md}}
+  </section>
+
+  {{#include:source/_include/_footer.html}}
+</body>
+
+</html>

@@ -1,0 +1,419 @@
+@font-face {
+    font-family: 'Bricolage';
+    src: url('/static/fonts/Bricolage.woff2') format('woff2');
+    font-weight: 200-800;
+}
+
+@font-face {
+    font-family: 'Onest';
+    src: url('/static/fonts/Onest-Regular.woff') format('woff');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Onest';
+    src: url('/static/fonts/Onest-Bold.woff') format('woff');
+    font-weight: 600;
+}
+
+:root {
+    --font-header: "Bricolage", system-ui, sans-serif;
+    --font-body: "Onest", system-ui, sans-serif;
+    /* PADDINGS & MARGINS */
+    --space: 4rem;
+    --outer: 1.5rem;
+    --inter: 1rem;
+    --inner: 0.5rem;
+    --inlet: 0.25rem;
+    /* CONSTRAINTS */
+    --hwdth: 56rem;
+    --mwdth: 68rem;
+    /* RADIUS */
+    --border-radius-large: 2rem;
+    /* SCROLL */
+    --scroll: 0;
+    /* NEUTRAL COLORS */
+    --neutral-hue: 40;
+    --color-title: hsl(var(--neutral-hue), 20%, 20%);
+    --color-text: hsl(var(--neutral-hue), 15%, 10%);
+    --color-text-light: hsl(var(--neutral-hue), 20%, 60%);
+    --color-paper: hsl(var(--neutral-hue), 80%, 94%);
+    --color-paper-light: hsl(var(--neutral-hue), 75%, 92%);
+    /* BUTTONS */
+    --rythm-hue: 310;
+    --color-button: hsl(var(--rythm-hue), 100%, 100%);
+    --color-button-hover: hsl(var(--rythm-hue), 100%, 90%);
+    --color-button-active: hsl(var(--rythm-hue), 100%, 85%);
+    --color-button-text: hsl(var(--rythm-hue), 15%, 15%);
+    --color-button-ring: hsl(var(--rythm-hue), 100%, 70%);
+    /* CTA */
+    --hue: 210;
+    --color-cta: hsl(var(--hue), 70%, 40%);
+    --color-cta-hover: hsl(var(--hue), 70%, 55%);
+    --color-cta-active: hsl(var(--hue), 70%, 60%);
+    --color-cta-text: hsl(var(--hue), 10%, 100%);
+    --color-cta-focus-ring: hsl(var(--hue), 100%, 100%);
+    /* OPTIONS */
+    --option-hue: 40;
+    --color-option: hsl(var(--option-hue), 50%, 83%);
+    --color-option-hover: hsl(var(--option-hue), 50%, 86%);
+    --color-option-active: hsl(var(--option-hue), 50%, 88%);
+    --color-option-text: var(--color-text);
+    --color-option-focus-ring: hsl(var(--option-hue), 50%, 50%);
+    /* OPTIONS SELECTED */
+    --color-option-selected: hsl(var(--option-hue), 100%, 100%);
+    --color-option-selected-text: hsl(var(--hue), 80%, 30%);
+    /* FOCUS */
+    --color-focus-outline: hsl(var(--hue), 100%, 50%);
+    /* BORDERS */
+    --color-border-static: hsla(30, 100%, 15%, 15%);
+    --color-border-field-hover: hsl(310, 80%, 80%);
+    --color-border-field-active: hsl(310, 100%, 70%);
+    /* SHADOWS */
+    --button-shadow: 0 0.25rem 1rem -0.5rem hsla(30, 15%, 15%, 20%);
+    --main-shadow: 0 0 1rem -0.5rem hsla(30, 50%, 25%, 50%);
+}
+
+body,
+header,
+main,
+nav,
+hr,
+h1,
+h2,
+h3,
+label,
+fieldset,
+legend,
+p,
+time,
+picture,
+figure,
+figcaption,
+img,
+video,
+footer,
+div,
+pre,
+code,
+input,
+form,
+button {
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-sizing: border-box;
+}
+
+body {
+    position: relative;
+    font-family: var(--font-body);
+    font-variation-settings: 'wght' 400;
+    font-weight: 400;
+    color: var(--color-text);
+    background-color: var(--color-paper-light);
+    height: 100%;
+    background-image: url("/static/assets/specks_dark_button.png"), url("/static/assets/specks_light_button.png");
+    background-size: 200px 200px, 400px 400px;
+    background-repeat: repeat;
+}
+
+main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space);
+    padding: 8vw 6vw;
+    width: 100%;
+    background: var(--color-paper);
+}
+
+/* The main container behaves a bit differently when the 3d logo header is present
+It gets rounder corners, and a drop shadow. */
+vm-logo+main {
+    margin-top: calc(var(--border-radius-large) * -1);
+    border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+}
+
+/* OUTER */
+section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--outer);
+    width: 100%;
+    max-width: var(--mwdth);
+    margin: 0 auto;
+}
+
+/* INTER */
+fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: var(--inter);
+    width: 100%;
+    max-width: calc(var(--hwdth) + var(--inter) * 2);
+    margin: 0 auto;
+    background-color: var(--color-paper-light);
+    background-image: url("/static/assets/specks_dark_button.png"), url("/static/assets/specks_light_button.png");
+    background-size: 200px 200px, 400px 400px;
+    background-repeat: repeat;
+}
+
+/* INNER */
+article {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--inter);
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--inner);
+}
+
+label>span {
+    font-variation-settings: 'opsz' 100, 'wght' 600;
+    font-weight: 600;
+}
+
+figure {
+    display: block;
+    width: 100%;
+    height: fit-content;
+}
+
+figure>img, figure>video {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 20rem;
+    max-height: 32rem;
+    object-fit: cover;
+}
+
+figure>figcaption {
+    padding: var(--inter);
+    width: 100%;
+    max-width: var(--hwdth);
+    margin: 0 auto;
+}
+
+h1 {
+    color: var(--color-title);
+    font-family: var(--font-header);
+    font-size: 6rem;
+    line-height: 100%;
+    font-variation-settings: 'opsz' 100, 'wght' 800;
+    font-weight: 800;
+}
+
+h2 {
+    color: var(--color-title);
+    font-family: var(--font-header);
+    font-size: 2rem;
+    line-height: 120%;
+    font-variation-settings: 'opsz' 60, 'wght' 600;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    font-family: var(--font-body);
+    line-height: 130%;
+}
+
+p,
+b,
+ul,
+ol,
+li,
+time,
+input {
+    color: var(--color-text);
+    font-family: var(--font-body);
+    line-height: 165%;
+    font-size: 1rem;
+}
+
+b {
+    font-variation-settings: 'wght' 600;
+    font-weight: 600;
+}
+
+ol,
+ul {
+    display: flex;
+    flex-flow: column nowrap;
+    margin: 0;
+    padding: 0;
+    padding-left: var(--outer);
+    gap: var(--inner);
+}
+
+ol {
+    counter-reset: item;
+}
+
+ol>li {
+    list-style-type: none;
+}
+
+ol>li::before {
+    display: inline-block;
+    content: counter(item) ". ";
+    font-size: 0.9rem;
+    font-variation-settings: 'wght' 600;
+    font-weight: 600;
+    counter-increment: item;
+    margin-left: -1.5rem;
+    width: 1.5rem;
+    color: var(--color-text-light);
+}
+
+.chapeau {
+    font-size: 1.3rem;
+}
+
+.constraint {
+    width: 100%;
+    max-width: var(--hwdth);
+    margin: 0 auto;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.clear {
+    /* take the whole row in a flexbox*/
+    flex: 0 0 100%;
+    clear: both;
+}
+
+footer {
+    padding: 2rem 2rem 5rem 2rem;
+    text-align: center;
+}
+
+small {
+    font-size: 0.96rem;
+    font-variation-settings: 'wght' 400;
+    font-weight: 400;
+}
+
+.triptych {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--outer);
+}
+
+.diptych {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--outer);
+    align-items: start;
+    justify-content: start;
+}
+
+.card {
+    background: white;
+    border-radius: var(--border-radius-large);
+    padding: var(--outer);
+    box-shadow: var(--button-shadow);
+}
+
+.grid {
+    list-style-type: none;
+    display: grid;
+    gap: var(--outer);
+    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    width: 100%;
+}
+
+main {
+    counter-reset: questionid;
+}
+
+fieldset {
+    padding: var(--outer);
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 2.5rem;
+    border-color: var(--color-border-static);
+}
+
+fieldset>legend {
+    font-family: var(--font-body);
+    color: var(--color-title);
+    font-variation-settings: 'wght' 600;
+    font-weight: 600;
+    font-size: 1.35rem;
+    padding: 0.25rem 0.5rem;
+    margin-left: -0.5rem;
+}
+
+fieldset>legend::before {
+    counter-increment: questionid;
+    content: counter(questionid, decimal-leading-zero);
+    margin-right: 0.5rem;
+    font-size: 80%;
+    color: var(--color-text-light);
+}
+
+@media (max-width: 1100px) {
+    :root {
+        --hwdth: 46rem;
+    }
+
+    h1 {
+        font-size: 5rem;
+    }
+
+    .card {
+        padding: 2rem;
+    }
+
+    .triptych {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .diptych {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 672px) {
+    :root {
+        --space: 3rem;
+        --outer: 1.5rem;
+        --inter: 1rem;
+        --inner: 0.5rem;
+    }
+
+    main {
+        padding: var(--space) var(--outer);
+    }
+
+    h1 {
+        font-size: 3.6rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .triptych {
+        grid-template-columns: 1fr;
+    }
+}

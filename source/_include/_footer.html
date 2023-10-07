@@ -3,3 +3,15 @@
         {{#bash:date +"%Y"}} — All Rights Reserved
     </p>
 </footer>
+
+<script>
+    // Passive mode to not interfer with scrolling
+    // https://stackoverflow.com/questions/12522807/scroll-event-listener-javascript
+    window.addEventListener("scroll", (event) => {
+        document.documentElement.style.setProperty('--position', this.scrollY / this.innerHeight);
+        document.documentElement.style.setProperty('--scroll', this.scrollY + "px");
+    }, {
+        passive: true
+    });
+    document.documentElement.style.setProperty('--scroll', "0px");
+</script>

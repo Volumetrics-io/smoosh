@@ -3,14 +3,17 @@
 
 {{#include:source/_include/_head.html}}
 
-<body>
-  {{#include:source/_include/_nav.html}}
-  <section>
-    {{#slot}}
-  </section>
-  <a href="/posts/">More articles</a>
-  {{#include:source/_include/_footer.html}}
+    <body>
+        {{#include:source/_include/_nav.html}}
 
-</body>
+            <main class="gap-space">
+                <section>
+                    {{#slot}}
+                </section>
+                <a href="/posts/">More articles</a>
+            </main>
+
+            {{#include:source/_include/_footer.html}}
+    </body>
 
 </html>

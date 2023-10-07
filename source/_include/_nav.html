@@ -1,9 +1,28 @@
+<style>
+    nav {
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: fixed;
+      top: 0;
+      padding: 1rem 2rem;
+      z-index: 99999;
+      background: rgba(255, 255, 255, calc(var(--position) * 5));
+    }
+
+    nav:first-child {
+      margin-right: auto;
+    }
+
+    nav>*:nth-child(2) {
+      margin-left: auto;
+    }
+    
+</style>
 <nav>
-    <a href="/">{{#include:source/static/favicon.svg}}</a>
-    <a href="/">Home</a>
+    <a href="/" id="logo-home">{{#include:source/static/favicon.svg}}</a>
     <a href="/posts">Blog</a>
-    <a href="/portfolio">Portfolio</a>
+    <a href="/careers">Careers</a>
     <a href="/about">About</a>
 </nav>
-
-<hr />

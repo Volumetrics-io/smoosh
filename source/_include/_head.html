@@ -25,7 +25,19 @@
     <meta content="{{description}}" property="og:description" class="next-head" />
     <meta content="{{sitename}}" property="og:site_name" class="next-head" />
 
-    <style>
-      {{#include:source/static/style.css}}
-    </style>
+    <!-- <script type="module" src="/components/component.landingheader.js"></script> -->
+    <!-- <script type="module" src="/components/component.jobcard.js"></script> -->
+    <script defer data-domain="volumetrics.io" src="https://plausible.io/js/script.js"></script>
+
+    <link rel="preload" href="/static/fonts/Bricolage.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/fonts/Onest-Regular.woff" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="/static/fonts/Onest-Bold.woff" as="font" type="font/woff" crossorigin />
+
+    <link rel="stylesheet" type="text/css" href="/static/styles/global.css" />
+    <link rel="stylesheet" type="text/css" href="/static/styles/system.css" />
+
+    <!-- <style>
+      {{#include:source/static/styles/global.css}}
+      {{#include:source/static/styles/system.css}}
+    </style> -->
 </head>
