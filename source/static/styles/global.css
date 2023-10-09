@@ -44,6 +44,7 @@
     /* BUTTONS */
     /* --rythm-hue: 310; */
     --rythm-hue: 300;
+    /* --rythm-hue: 40; */
     --color-button: hsl(var(--rythm-hue), 100%, 95%);
     --color-button-hover: hsl(var(--rythm-hue), 100%, 90%);
     --color-button-active: hsl(var(--rythm-hue), 100%, 85%);
