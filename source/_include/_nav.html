@@ -1,28 +1,67 @@
 <style>
-    nav {
-      width: 100vw;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      position: fixed;
-      top: 0;
-      padding: 1rem 2rem;
-      z-index: 99999;
-      background: rgba(255, 255, 255, calc(var(--position) * 5));
-    }
 
-    nav:first-child {
+
+  header {
+    width: 100%;
+    position: fixed;
+    top: 1rem;
+    padding: 0 1rem;
+    /* left: var(--gap); */
+    /* left: 50%; */
+    /* transform: translateX(-50%); */
+    z-index: 99999;
+  }
+
+  nav {
+    position: relative;
+    width: 100%;
+    max-width: var(--mwdth);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 1rem 2rem 1rem 1.25rem;
+    gap: 1rem;
+  }
+
+  /* nav:first-child {
       margin-right: auto;
-    }
+    } */
 
-    nav>*:nth-child(2) {
-      margin-left: auto;
+  nav>*:nth-child(2) {
+    margin-left: auto;
+  }
+
+  nav::before {
+    display: block;
+    content: "";
+    position: absolute;
+    inset: 0;
+    max-width: var(--mwdth);
+    background: red;
+    z-index: -1;
+    opacity: calc(var(--position) * 5 - 3);
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 4px 16px -8px hsla(30, 15%, 15%, 20%);
+  }
+
+  #logo-home>svg {
+    display: block;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (max-width: 672px) {
+    nav {
+
     }
-    
+  }
 </style>
-<nav>
-    <a href="/" id="logo-home">{{#include:source/static/favicon.svg}}</a>
-    <a href="/posts">Blog</a>
-    <a href="/careers">Careers</a>
-    <a href="/about">About</a>
-</nav>
+<header>
+  <nav>
+    <a id="logo-home" href="/">{{#include:source/static/assets/logo.svg}}</a>
+    <a class="text-link" href="/posts">Blog</a>
+    <a class="text-link" href="/careers">Careers</a>
+    <a class="text-link" href="/about">About</a>
+  </nav>
+</header>

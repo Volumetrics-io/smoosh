@@ -1,0 +1,90 @@
+<style>
+  .hiring-banner {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 2rem;
+    box-shadow: var(--button-shadow);
+    max-width: var(--mwdth);
+    margin: 0 auto;
+  }
+
+  .hiring-banner-background {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: -3;
+  }
+
+  .hiring-banner-foreground {
+    padding: 2rem;
+    width: calc(100% - 4rem);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    border-radius: 2rem;
+  }
+
+  .hiring-stack {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    justify-items: start;
+    align-items: center;
+    /* padding: 2rem; */
+  }
+
+  .hiring-block {
+    grow: 1;
+    width: 100%;
+    align-items: center;
+  }
+
+  .hiring-title {
+    /* text-align: center; */
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 2.5rem;
+    line-height: 100%;
+    font-variation-settings: 'opsz' 50, 'wght' 800;
+    font-weight: 800;
+    margin-right: auto;
+  }
+
+  .hiring-headline {
+    max-width: 26rem;
+    text-align: left;
+    width: 100%;
+    font-size: 1rem;
+    font-variation-settings: 'wght' 400;
+    font-weight: 400;
+  }
+
+  @media (max-width: 672px) {
+    .hiring-stack {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      /* } */
+    }
+</style>
+<!-- <link rel="stylesheet" href="/styles/global.css"> -->
+<!-- <link rel="stylesheet" href="/styles/system.css"> -->
+<div class="hiring-banner">
+  <video src="/static/assets/gradient.mp4" playsinline="" autoplay="" muted="" loop="" class="hiring-banner-background" alt=""></video>
+  <section class="hiring-banner-foreground">
+    <div class="hiring-stack">
+      <div class="hiring-block">
+        <h1 class="hiring-title">We're hiring!</h1>
+        <span class="hiring-headline">
+          <p>We're looking for two Founding Engineers:</p>
+          <p>
+          </p>
+          <p><a class="text-link" href="/careers/backend/">Backend engineer</a>, and <a class="text-link" href="/careers/webxr/">Graphics engineer</a></p>
+        </span>
+      </div>
+      <a class="cta" href="/careers/">Learn more</a>
+    </div>
+  </section>
+</div>

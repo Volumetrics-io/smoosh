@@ -1,8 +1,13 @@
-<article class="card">
-  <img src='{{previewImage}}' style='width: 100%; aspect-ratio: 5 / 3; object-fit: cover;' />
-    <h3>{{title}}</h3>
-    <author>{{author}}</author>
-    <time>{{date}}</time>
-    <p>{{description}}</p>
-    <p><a href='{{link}}'>Read more</a></p>
-</article>
+<a href='{{link}}'>
+  <div class="card">
+    <img src='{{previewImage}}' style='width: 100%; aspect-ratio: 5 / 3; object-fit: cover;' />
+
+    <article>
+      <h3>{{title}}</h3>
+      <author>{{author}}</author>
+      <time>{{date}}</time>
+      <p>{{description}}</p>
+    </article>
+  </div>
+
+</a>

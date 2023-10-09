@@ -1,32 +1,34 @@
 <style>
-    #logo-3d-header {
-        --height: 32rem;
-        display: block;
-        contain: content;
-        height: var(--height);
-        position: relative;
-        width: 100%;
-        z-index: -1;
-        overflow: hidden;
-    }
+  #logo-3d-header {
+    --height: 32rem;
+    display: block;
+    contain: content;
+    height: var(--height);
+    position: relative;
+    width: 100%;
+    z-index: -1;
+    overflow: hidden;
+  }
 
-    #logo {
-        display: block;
-        position: absolute;
-        transform: translateX(-50%) translateY(-50%);
-        left: 50%;
-        width: 100%;
-        height: var(--height);
-        animation-name: logoReveal;
-        animation-duration: 1s;
-        animation-delay: 0.3s;
-        animation-fill-mode: both;
-        animation-timing-function: cubic-bezier(0, 1.5, 0.5, 1);
-        opacity: 0;
-        top: 54%;
-    }
+  #logo {
+    display: block;
+    position: absolute;
+    transform: translateX(-50%) translateY(-50%);
+    left: 50%;
+    width: 100%;
+    height: var(--height);
+    animation-name: logoReveal;
+    animation-duration: 1s;
+    animation-delay: 0.3s;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0, 1.5, 0.5, 1);
+    opacity: 0;
+    /* top: 54%; */
+    top: calc(50% + var(--scroll) * 0.35);
+    /* top: calc(var(--scroll) * 0.5); */
+  }
 
-    #logotype {
+  /* #logotype {
         position: absolute;
         top: calc(50% - var(--scroll) * 0.25);
         left: 50%;
@@ -37,183 +39,166 @@
         color: rgba(0, 0, 0, 0.65);
         font-variation-settings: 'opsz' 80, 'wght' 500;
         font-weight: 500;
+    } */
+
+  @keyframes logoReveal {
+    from {
+      /* top: 54%; */
+      opacity: 0;
     }
 
-    @keyframes logoReveal {
-        from {
-            top: 54%;
-            opacity: 0;
-        }
-
-        to {
-            top: 50%;
-            opacity: 1;
-        }
+    to {
+      /* top: 50%; */
+      opacity: 1;
     }
+  }
 
-    .background {
-        position: absolute;
-        top: calc(var(--scroll) * 0.5);
-        height: 32rem;
-        width: 100vw;
-        object-fit: cover;
-        z-index: -3;
-    }
+  .background {
+    position: absolute;
+    top: calc(var(--scroll) * 0.5);
+    height: 32rem;
+    width: 100vw;
+    object-fit: cover;
+    z-index: -3;
+  }
 
-    .foreground {
-        display: block;
-        position: absolute;
-        bottom: calc(var(--scroll) * -0.25);
-        height: 160px;
-        width: 100%;
-        background-image: url('/static/assets/table.jpg');
-        background-repeat: repeat-x;
-        background-size: 2000px;
-        background-position: center;
-        object-fit: contain;
-        background-color: hsl(26, 51%, 72%);
-    }
+  .foreground {
+    display: block;
+    position: absolute;
+    bottom: calc(var(--scroll) * -0.25);
+    height: 160px;
+    width: 100%;
+    background-image: url('/static/assets/table.jpg');
+    background-repeat: repeat-x;
+    background-size: 2000px;
+    background-position: center;
+    object-fit: contain;
+    background-color: hsl(26, 51%, 72%);
+  }
 
-    .logo-shadow {
-        display: block;
-        position: absolute;
-        bottom: calc(var(--scroll) * -0.2 + 56px);
-        opacity: calc(1 - var(--position) * 2);
-        width: calc(600px - var(--scroll));
-        left: 50%;
-        transform: translateX(-50%);
-        object-fit: contain;
-    }
+  .logo-shadow {
+    display: block;
+    position: absolute;
+    bottom: calc(var(--scroll) * -0.2 + 56px);
+    opacity: calc(1 - var(--position) * 2);
+    width: calc(600px - var(--scroll));
+    left: 50%;
+    transform: translateX(-50%);
+    object-fit: contain;
+  }
 </style>
-<script type="importmap">
-    {
-        "imports": {
-            "THREE": "/static/scripts/three.module.js",
-            "BufferGeometryUtils": "/static/scripts/BufferGeometryUtils.js",
-            "STLLoader": "/static/scripts/STLLoader.js",
-            "RGBELoader": "/static/scripts/STLLoader.js"
-         }
-    }
- </script>
-<!-- <script type="module" src="/static/scripts/three.module.js"></script> -->
-<!-- <script type="module" src="/static/scripts/BufferGeometryUtils.js"></script> -->
-<!-- <script type="module" src="/static/scripts/STLLoader.js"></script> -->
-<!-- <script type="module" src="/static/scripts/RGBELoader.js"></script> -->
-<!-- import * as THREE from '/scripts/three.module.js';
-import * as BufferGeometryUtils from '/scripts/BufferGeometryUtils.js';
-import {
-    STLLoader
-} from '/scripts/STLLoader.js';
-import {
-    RGBELoader
-} from '/scripts/RGBELoader.js'; -->
+
 <div id="logo-3d-header">
-    <video src='/static/assets/coffee_shop_wide.mp4' playsinline autoplay muted loop class="background" alt=""></video>
-    <div class="foreground"></div>
-    <img src="/static/assets/shadow.png" class="logo-shadow" alt="" />
-    <div id="logo"></div>
-    <div id="logotype">volumetrics</div>
+  <video src='/static/assets/coffee_shop_wide.mp4' playsinline autoplay muted loop class="background" alt=""></video>
+  <div class="foreground"></div>
+  <img src="/static/assets/shadow.png" class="logo-shadow" alt="" />
+  <div id="logo"></div>
+  <!-- <div id="logotype">volumetrics</div> -->
 </div>
 
 <script type="module">
-    import * as THREE from '/static/scripts/three.module.js';
-    import * as BufferGeometryUtils from '/static/scripts/BufferGeometryUtils.js';
-    import {
-        STLLoader
-    } from '/static/scripts/STLLoader.js';
-    import {
-        RGBELoader
-    } from '/static/scripts/RGBELoader.js';
+  import * as THREE from '/static/scripts/three.module.js';
+  import * as BufferGeometryUtils from '/static/scripts/BufferGeometryUtils.js';
+  import {
+    STLLoader
+  } from '/static/scripts/STLLoader.js';
+  import {
+    RGBELoader
+  } from '/static/scripts/RGBELoader.js';
 
+  const rect = document.getElementById("logo").getBoundingClientRect();
+  const width = rect.width;
+  const height = rect.height;
+
+  const scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(10, width / height, 0.1, 1000);
+  camera.position.z = 7;
+
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true
+  });
+
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(window.devicePixelRatio);
+
+  document.getElementById("logo").appendChild(renderer.domElement);
+
+  const loader = new STLLoader();
+
+  loader.load('/static/assets/logo_50-36.stl', (geometry) => {
+
+    geometry = BufferGeometryUtils.mergeVertices(geometry, 0.1);
+    geometry.computeVertexNormals(true);
+
+    const material = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color("white"),
+      emissive: new THREE.Color("white"),
+      emissiveIntensity: 0.15,
+      clearcoat: 0.75,
+      clearcoatRoughness: 0.5,
+      metalness: 0.25,
+      roughness: 0.5,
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(0, 0.05, 0);
+    mesh.rotation.set(-0.4, 0.3, 0.8);
+    let scale = 0.01;
+    mesh.scale.set(scale, scale, scale);
+    scene.add(mesh);
+
+    const light_orange = new THREE.PointLight({});
+    light_orange.color = new THREE.Color(`hsl(30, 100%, 64%)`);
+    light_orange.intensity = 16;
+    scene.add(light_orange);
+
+    const light_pink = new THREE.PointLight({});
+    light_pink.color = new THREE.Color(`hsl(340, 100%, 64%)`);
+    light_pink.intensity = 16;
+    scene.add(light_pink);
+
+    const light_blue = new THREE.PointLight({});
+    light_blue.color = new THREE.Color(`hsl(208, 100%, 64%)`);
+    light_blue.intensity = 16;
+    scene.add(light_blue);
+
+    var speed = 0;
+    var timer;
+    var radius = 1.6;
+    var depth = 0.85;
+
+    const render = () => {
+      timer = Date.now() * 0.00025;
+
+      light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
+      light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
+      light_orange.position.z = depth;
+
+      light_pink.position.x = Math.sin(timer * 1) * radius;
+      light_pink.position.y = Math.cos(timer * 1) * radius;
+      light_pink.position.z = depth;
+
+      light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
+      light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
+      light_blue.position.z = depth;
+
+      // Rotate the solid, starting from rest and slowly accelerating
+      speed = (speed < 0.002) ? speed + 0.000008 : speed;
+      mesh.rotation.z += speed;
+
+      renderer.render(scene, camera);
+    };
+
+    renderer.setAnimationLoop(render);
+  });
+
+  function updateViewport() {
     const rect = document.getElementById("logo").getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
+    renderer.setSize(rect.width, rect.height);
+    camera.aspect = rect.width / rect.height;
+    camera.updateProjectionMatrix();
+  }
 
-    const scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(10, width / height, 0.1, 1000);
-    camera.position.z = 8;
-
-    const renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true
-    });
-
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
-
-    document.getElementById("logo").appendChild(renderer.domElement);
-
-    const loader = new STLLoader();
-
-    loader.load('/static/assets/logo_50-36.stl', (geometry) => {
-
-        geometry = BufferGeometryUtils.mergeVertices(geometry, 0.1);
-        geometry.computeVertexNormals(true);
-
-        const material = new THREE.MeshPhysicalMaterial({
-            color: new THREE.Color("white"),
-            emissive: new THREE.Color("white"),
-            emissiveIntensity: 0.15,
-            clearcoat: 0.75,
-            clearcoatRoughness: 0.5,
-            metalness: 0.25,
-            roughness: 0.5,
-        });
-
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(0.02, 0.2, 0);
-        mesh.rotation.set(-0.4, 0.3, 0.8);
-        let scale = 0.01;
-        mesh.scale.set(scale, scale, scale);
-        scene.add(mesh);
-
-        const light_orange = new THREE.PointLight({});
-        light_orange.color = new THREE.Color(`hsl(30, 100%, 64%)`);
-        light_orange.intensity = 16;
-        scene.add(light_orange);
-
-        const light_pink = new THREE.PointLight({});
-        light_pink.color = new THREE.Color(`hsl(340, 100%, 64%)`);
-        light_pink.intensity = 16;
-        scene.add(light_pink);
-
-        const light_blue = new THREE.PointLight({});
-        light_blue.color = new THREE.Color(`hsl(208, 100%, 64%)`);
-        light_blue.intensity = 16;
-        scene.add(light_blue);
-
-        var speed = 0;
-        var timer;
-        var radius = 1.6;
-        var depth = 0.85;
-
-        const render = () => {
-            timer = Date.now() * 0.00025;
-
-            light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
-            light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
-            light_orange.position.z = depth;
-
-            light_pink.position.x = Math.sin(timer * 1) * radius;
-            light_pink.position.y = Math.cos(timer * 1) * radius;
-            light_pink.position.z = depth;
-
-            light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
-            light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
-            light_blue.position.z = depth;
-
-            // Rotate the solid, starting from rest and slowly accelerating
-            speed = (speed < 0.002) ? speed + 0.000008 : speed;
-            mesh.rotation.z += speed;
-
-            renderer.render(scene, camera);
-        };
-
-        renderer.setAnimationLoop(render);
-    });
-
-
-
-
-    // window.addEventListener('resize', this.updateViewport, false);
+  window.addEventListener('resize', updateViewport, false);
 </script>

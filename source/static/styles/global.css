@@ -32,6 +32,7 @@
     --border-radius-large: 2rem;
     /* SCROLL */
     --scroll: 0;
+    --position: 0;
     /* NEUTRAL COLORS */
     --neutral-hue: 40;
     --color-title: hsl(var(--neutral-hue), 20%, 20%);
@@ -39,14 +40,17 @@
     --color-text-light: hsl(var(--neutral-hue), 20%, 60%);
     --color-paper: hsl(var(--neutral-hue), 80%, 94%);
     --color-paper-light: hsl(var(--neutral-hue), 75%, 92%);
+    --color-paper-card: white;
     /* BUTTONS */
-    --rythm-hue: 310;
-    --color-button: hsl(var(--rythm-hue), 100%, 100%);
+    /* --rythm-hue: 310; */
+    --rythm-hue: 300;
+    --color-button: hsl(var(--rythm-hue), 100%, 95%);
     --color-button-hover: hsl(var(--rythm-hue), 100%, 90%);
     --color-button-active: hsl(var(--rythm-hue), 100%, 85%);
     --color-button-text: hsl(var(--rythm-hue), 15%, 15%);
     --color-button-ring: hsl(var(--rythm-hue), 100%, 70%);
     /* CTA */
+    /* --hue: 210; */
     --hue: 210;
     --color-cta: hsl(var(--hue), 70%, 40%);
     --color-cta-hover: hsl(var(--hue), 70%, 55%);
@@ -66,9 +70,9 @@
     /* FOCUS */
     --color-focus-outline: hsl(var(--hue), 100%, 50%);
     /* BORDERS */
-    --color-border-static: hsla(30, 100%, 15%, 15%);
-    --color-border-field-hover: hsl(310, 80%, 80%);
-    --color-border-field-active: hsl(310, 100%, 70%);
+    --color-border-static: hsla(var(--rythm-hue), 100%, 15%, 15%);
+    --color-border-field-hover: hsl(var(--rythm-hue), 80%, 80%);
+    --color-border-field-active: hsl(var(--rythm-hue), 100%, 70%);
     /* SHADOWS */
     --button-shadow: 0 0.25rem 1rem -0.5rem hsla(30, 15%, 15%, 20%);
     --main-shadow: 0 0 1rem -0.5rem hsla(30, 50%, 25%, 50%);
@@ -85,6 +89,7 @@ h3,
 label,
 fieldset,
 legend,
+a,
 p,
 time,
 picture,
@@ -126,11 +131,11 @@ main {
     padding: 8vw 6vw;
     width: 100%;
     background: var(--color-paper);
-}
+/* } */
 
 /* The main container behaves a bit differently when the 3d logo header is present
 It gets rounder corners, and a drop shadow. */
-vm-logo+main {
+/* main { */
     margin-top: calc(var(--border-radius-large) * -1);
     border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
 }
@@ -162,8 +167,10 @@ fieldset {
 /* INNER */
 article {
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: column nowrap;
+    /* flex-wrap: wrap; */
     gap: var(--inter);
+    padding: var(--outer);
 }
 
 label {
@@ -217,12 +224,21 @@ h2 {
     font-weight: 600;
 }
 
-h3 {
+/* h3 {
     font-size: 1rem;
     font-weight: 600;
     color: var(--color-text);
     font-family: var(--font-body);
     line-height: 130%;
+} */
+
+h3, fieldset>legend {
+  font-family: var(--font-body);
+  color: var(--color-title);
+  font-variation-settings: 'wght' 600;
+  font-weight: 600;
+  font-size: 1.35rem;
+  line-height: 130%;
 }
 
 p,
@@ -236,6 +252,10 @@ input {
     font-family: var(--font-body);
     line-height: 165%;
     font-size: 1rem;
+}
+
+a {
+  text-decoration: none;
 }
 
 b {
@@ -291,6 +311,10 @@ ol>li::before {
     clear: both;
 }
 
+.block {
+  display: block;
+}
+
 footer {
     padding: 2rem 2rem 5rem 2rem;
     text-align: center;
@@ -302,39 +326,15 @@ small {
     font-weight: 400;
 }
 
-.triptych {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--outer);
-}
-
-.diptych {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--outer);
-    align-items: start;
-    justify-content: start;
-}
-
-.card {
-    background: white;
-    border-radius: var(--border-radius-large);
-    padding: var(--outer);
-    box-shadow: var(--button-shadow);
-}
-
-.grid {
-    list-style-type: none;
-    display: grid;
-    gap: var(--outer);
-    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
-}
-
 form {
     display: flex;
     flex-direction: column;
     padding: 0;
     width: 100%;
+
+    /* display: flex; */
+    /* flex-wrap: wrap; */
+    gap: var(--inter);
 }
 
 main {
@@ -350,11 +350,6 @@ fieldset {
 }
 
 fieldset>legend {
-    font-family: var(--font-body);
-    color: var(--color-title);
-    font-variation-settings: 'wght' 600;
-    font-weight: 600;
-    font-size: 1.35rem;
     padding: 0.25rem 0.5rem;
     margin-left: -0.5rem;
 }
@@ -374,18 +369,6 @@ fieldset>legend::before {
 
     h1 {
         font-size: 5rem;
-    }
-
-    .card {
-        padding: 2rem;
-    }
-
-    .triptych {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .diptych {
-        grid-template-columns: 1fr;
     }
 }
 
@@ -407,13 +390,5 @@ fieldset>legend::before {
 
     h2 {
         font-size: 2rem;
-    }
-
-    .card {
-        padding: 1.5rem;
-    }
-
-    .triptych {
-        grid-template-columns: 1fr;
     }
 }
