@@ -2,7 +2,7 @@
 title: Picking up speed
 author: Michael Gutensohn
 date: 2023-09-26
-preview: hand_matte.gif
+preview: preview.jpg
 desc: Elit egestas nulla enim vulputate proin fermentum a dolor euismod.
 ---
 # Picking up speed

@@ -1,23 +1,40 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
 
-{{#set:title=Careers}}
-{{#set:description=Join our team, and our mission}}
+<!--
+{{#set:title=Be our Founding engineer!}}
+{{#set:description=We are currently hiring for 2 positions}}
 {{#set:previewImage=static/light.jpg}}
+-->
+
 {{#include:source/_include/_head.html}}
 
-<body>
-    {{#include:source/_include/_nav.html}}
+    <body>
+        {{#include:source/_include/_nav.html}}
 
-    <main class="gap-space">
-        <h1 class="constraint">{{title}}</h1>
-        <p class="constraint chapeau">{{description}}</p>
-        <ul>
-            <li><a href="/careers/backend/">Backend</a></li>
-            <li><a href="/careers/webxr/">webxr</a></li>
-        </ul>
-    </main>
-        {{#include:source/_include/_footer.html}}
-</body>
+            <main class="gap-space">
+                <section>
+                    <h1 class="constraint">{{title}}</h1>
+                    <p class="constraint chapeau">{{description}}</p>
+                </section>
+                <section>
+                    <div class="diptych">
+                        <fieldset>
+                            <legend>Founding engineer — Backend</legend>
+                            <p class="chapeau">You will build the stack, contribute to our shared vision, and connect with a diverse community of spatial web developers.</p>
+                            <a class="cta" href="/careers/backend/">View Job Description</a>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Founding engineer — Graphics</legend>
+                            <p class="chapeau">You will share ownership over MR.js, our Spatial UI library, with full ownership of the core graphics pipeline. </p>
+                            <a class="cta" href="/careers/webxr/">View Job Description</a>
+                        </fieldset>
+                    </div>
+                </section>
+            </main>
+
+            {{#include:source/_include/_footer.html}}
+    </body>
 
 </html>

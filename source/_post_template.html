@@ -3,19 +3,26 @@
 
 {{#include:source/_include/_head.html}}
 
-  <body>
-    {{#include:source/_include/_nav.html}}
+    <body>
+        {{#include:source/_include/_nav.html}}
 
-      <main class="gap-space">
-        <section>
-          {{#slot}}
-        </section>
-        <section class="constraint">
+            <main class="gap-space">
+                <section>
+                    {{#slot}}
+                </section>
+                <!-- <section class="constraint">
           <a href="/posts/">More articles</a>
-        </section>
-      </main>
+        </section> -->
 
-      {{#include:source/_include/_footer.html}}
-  </body>
+                <section>
+                    <h2 class="constraint">The latest posts</h2>
+                    <div class="triptych">
+                        {{#posts:3}}
+                    </div>
+                </section>
+            </main>
+
+            {{#include:source/_include/_footer.html}}
+    </body>
 
 </html>

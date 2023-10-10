@@ -45,7 +45,7 @@
     /* --rythm-hue: 310; */
     --rythm-hue: 300;
     /* --rythm-hue: 40; */
-    --color-button: hsl(var(--rythm-hue), 100%, 95%);
+    --color-button: hsl(var(--rythm-hue), 15%, 96%);
     --color-button-hover: hsl(var(--rythm-hue), 100%, 90%);
     --color-button-active: hsl(var(--rythm-hue), 100%, 85%);
     --color-button-text: hsl(var(--rythm-hue), 15%, 15%);
@@ -122,6 +122,7 @@ body {
     background-image: url("/static/assets/specks_dark_button.png"), url("/static/assets/specks_light_button.png");
     background-size: 200px 200px, 400px 400px;
     background-repeat: repeat;
+    padding-top: 6rem;
 }
 
 main {
@@ -132,13 +133,18 @@ main {
     padding: 8vw 6vw;
     width: 100%;
     background: var(--color-paper);
-/* } */
+    border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+    /* margin-top: 6rem; */
+}
 
 /* The main container behaves a bit differently when the 3d logo header is present
 It gets rounder corners, and a drop shadow. */
-/* main { */
+body.landing {
+    padding-top: 0;
+}
+
+main.landing {
     margin-top: calc(var(--border-radius-large) * -1);
-    border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
 }
 
 /* OUTER */
@@ -171,7 +177,7 @@ article {
     flex-flow: column nowrap;
     /* flex-wrap: wrap; */
     gap: var(--inter);
-    padding: var(--outer);
+    /* padding: var(--outer); */
 }
 
 label {

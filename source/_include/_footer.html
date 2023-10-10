@@ -5,13 +5,14 @@
 </footer>
 
 <script>
-    // Passive mode to not interfer with scrolling
-    // https://stackoverflow.com/questions/12522807/scroll-event-listener-javascript
     window.addEventListener("scroll", (event) => {
         document.documentElement.style.setProperty('--position', this.scrollY / this.innerHeight);
         document.documentElement.style.setProperty('--scroll', this.scrollY + "px");
+        document.documentElement.style.setProperty('--nav-opacity', Math.min(1, this.scrollY / 100));
     }, {
         passive: true
     });
     document.documentElement.style.setProperty('--scroll', "0px");
+    document.documentElement.style.setProperty('--position', 0);
+    document.documentElement.style.setProperty('--nav-opacity', 0);
 </script>
