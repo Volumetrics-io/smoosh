@@ -3,16 +3,54 @@
 
 {{#include:source/_include/_head.html}}
 
+    <style>
+        .markdown {
+            display: flex;
+            flex-direction: column;
+            gap: var(--outer);
+            width: 100%;
+            max-width: var(--mwdth);
+            margin: 0 auto;
+            /* overflow-x: hidden; */
+        }
+
+        .markdown>h1,
+        .markdown>h2,
+        .markdown>h3,
+        .markdown>p,
+        .markdown>ul,
+        .markdown>ol,
+        .markdown>li
+         {
+            width: 100%;
+            max-width: var(--hwdth);
+            margin: 0 auto;
+        }
+
+        .markdown > figure {
+            margin-left: -6vw;
+            width: 100vw;
+        }
+
+        .markdown > figure > figcaption {
+            display: none;
+        }
+
+        @media (max-width: 672px) {
+            .markdown > figure {
+                margin-left: calc(var(--outer) * -1);
+            }
+        }
+
+    </style>
+
     <body>
         {{#include:source/_include/_nav.html}}
 
             <main class="gap-space">
-                <section>
+                <div class="markdown">
                     {{#slot}}
-                </section>
-                <!-- <section class="constraint">
-          <a href="/posts/">More articles</a>
-        </section> -->
+                </div>
 
                 <section>
                     <h2 class="constraint">The latest posts</h2>

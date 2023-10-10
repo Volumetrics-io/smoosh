@@ -58,7 +58,7 @@ By playing with render order, I was able to achieve a very rudimentary form of h
 
 That’s all for this week! Check out the [full demo on Youtube](https://youtu.be/2LrY2fIslJw), and check [github](https://github.com/Volumetrics-io/MR.js/tree/main) for the latest updates.
 
-[![Youtube preview](youtube.jpg)](https://youtu.be/2LrY2fIslJw)
+<a class="button cta" href="https://youtu.be/2LrY2fIslJw">Watch on YouTube</a>
 
 til next time,
 

@@ -134,6 +134,7 @@ main {
     width: 100%;
     background: var(--color-paper);
     border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+    overflow-x: hidden;
     /* margin-top: 6rem; */
 }
 
@@ -161,7 +162,7 @@ section {
 fieldset {
     display: flex;
     flex-direction: column;
-    gap: var(--inter);
+    gap: var(--outer);
     width: 100%;
     max-width: calc(var(--hwdth) + var(--inter) * 2);
     margin: 0 auto;
@@ -201,7 +202,7 @@ figure>img, figure>video {
     display: block;
     width: 100%;
     height: auto;
-    min-height: 20rem;
+    min-height: 16rem;
     max-height: 32rem;
     object-fit: cover;
 }

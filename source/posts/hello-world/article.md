@@ -19,10 +19,6 @@ When it comes to product, we’re still mostly at the stage of discovery. Before
 
 From there, the next step is to have discovery chats with current web XR developers, and start diving onto some of these assumptions.
 
-> Hey reader 👋
->
-> Do you have things to say about the current state of web XR development? Do you know somebody who does? Please just reply to this email!
-
 ## Brand update
 
 Building a brand can be described as reflecting the people who will use your product. What do they like, what do they need, and what is their design sensibilities. We don’t know many of those things, but we can make some guesses:
@@ -35,9 +31,9 @@ We will have more to show in the next newsletter 😊
 
 MR.js is a spatial UI library designed to help developers get started building for the spatial web. Its repo is [open and available to the public](https://github.com/Volumetrics-io/MR.js). It’s still in Alpha tho!
 
-* **Bootstrapped**: MR.js comes with foundational features already implemented, such as hand gestures, physics, and high-fidelity text rendering.
-* **Extendable:** MR.js comes with a built-in ECS, implemented using Web Components and vanilla JavaScript. Developers can extend the `Entity` class, or any other element to create their own 2D or 3D UI elements, and implement custom logic by extending the `Systems` class. You can read more about it here
-* **Under the hood:** Built on top of already well established libraries such as THREE.js, WebGL, and Rapier.js, seasoned WebXR developers can quickly dive in to take full advantage of all MR.js has to offer.
+- **Bootstrapped**: MR.js comes with foundational features already implemented, such as hand gestures, physics, and high-fidelity text rendering.
+- **Extendable:** MR.js comes with a built-in ECS, implemented using Web Components and vanilla JavaScript. Developers can extend the `Entity` class, or any other element to create their own 2D or 3D UI elements, and implement custom logic by extending the `Systems` class. You can read more about it here
+- **Under the hood:** Built on top of already well established libraries such as THREE.js, WebGL, and Rapier.js, seasoned WebXR developers can quickly dive in to take full advantage of all MR.js has to offer.
 
 
 Thanks again for tuning in. We hope to share more exciting news in the coming weeks!
