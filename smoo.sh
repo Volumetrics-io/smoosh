@@ -321,7 +321,8 @@ mkdir -p "$outputDir"
 rm -rf "${outputDir}"/*
 echo -e "🧹 Cleaned up $(tput bold)/$outputDir/$(tput sgr0) folder"
 if [[ "$assetDir" ]]; then
-    cp -rd "$assetDir" "${outputDir}/"
+    # cp -rd "$assetDir" "${outputDir}/"
+    rsync -a "$assetDir" "${outputDir}/"
     echo "📦️ Copied $(tput bold)/$assetDir/$(tput sgr0) assets folder"
 fi
 ROUTELIST="$(<$routeFile)"
@@ -432,7 +433,8 @@ do
         # templateOutput="${templateOutput//\{\{previewImage\}\}/${previewURL}}"
 
         # Copy the folder, since it might contain assets
-        cp -rd "$folder" "${outputDir}/posts/"
+        # cp -rd "$folder" "${outputDir}/posts/"
+        rsync -a "$folder" "${outputDir}/posts/"
 
         echo $templateOutput > "${outputDir}/posts/${folder_name}/index.html"
 
