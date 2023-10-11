@@ -240,7 +240,7 @@ function prerenderTemplate {
     # Example: <!--#markdown:README.md-->
     # ---------------------------------------------------------------
     # local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
-    local MDS=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/{{\s*#markdown:.*}}/')
+    local MDS=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/\{\{\s*#markdown:.*}}/')
     for empty in $MDS; do
         # local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
         # local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
@@ -263,7 +263,7 @@ function renderTemplate {
     # Local variables with <!--#set-->
     # local SETS=$(echo -n "$TPLTEXT"|grep -Po '{{#set:.*?}}')
     # local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
-    local SETS=$(echo -n "$TPLTEXT"|perl -nle 'print $& if m/{{#set:.*?}}/')
+    local SETS=$(echo -n "$TPLTEXT"|perl -nle 'print $& if m/\{\{#set:.*?}}/')
 
     local L=''
     OLDIFS="$IFS"
@@ -333,7 +333,7 @@ do
         # Include code copied from render function
         # TODO: isolate in it's own function
         # INCLUDES=$(echo -n "$templateOutput"|grep -Po '{{\s*#include:.*}}')
-        INCLUDES=$(echo -n "$templateOutput"|perl -nle 'print $& if m/{{\s*#include:.*}}/')
+        INCLUDES=$(echo -n "$templateOutput"|perl -nle 'print $& if m/\{\{\s*#include:.*}}/')
 
         for empty in $INCLUDES; do
             INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
