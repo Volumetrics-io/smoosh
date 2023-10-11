@@ -177,7 +177,7 @@ function prerenderTemplate {
     # Example: {{#posts:0}}
     # ---------------------------------------------------------------
     # local POSTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#posts:.*}}')
-    # local POSTS=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/\{\{\s*#posts:.*}}/')
+    local POSTS=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/\{\{\s*#posts:.*}}/')
 
     for empty in $POSTS; do
         local POSTSLISTCONTENT=""
@@ -185,7 +185,7 @@ function prerenderTemplate {
         local postCount=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#posts:).*?(?=}})/')
 
         local iteration=0
-        # echo $postCount
+        echo $postCount
         for folder in "$postsDir"/*
         do
             if [[ -d $folder ]]; then
