@@ -1,30 +1,26 @@
 #!/bin/bash
 
-<<LICENSE
-MIT License
-
-Copyright (c) 2022 Laurent Baumann
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-LICENSE
-
-# set -x
+# MIT License
+#
+# Copyright (c) 2022 Laurent Baumann
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 # Data files and folders
 routeFile='source/_routes.conf'
@@ -42,10 +38,64 @@ if ! command -v rsync > /dev/null; then
 fi
 
 # Avoid "&" to be interpreted by bash
-# Temporarely replaces & with {{and}}
-# while we process all the template files.
+# Temporarely replaces & with %and% while we process all the template files.
 # That avoid bash to interpret the & in our csv, md, or html files
 replacementString="%and%"
+
+function generatePostList {
+  OLDIFS="$IFS"
+  IFS=$'\n'
+
+  # POSTS LIST
+  # List of all the posts in the folder defined as postsDir as a <ul>
+  # Example: {{#posts:0}}
+  # ---------------------------------------------------------------
+  local postCount="$1"
+  local empty=''
+  local result=""
+  local iteration=0
+
+  for folder in "$postsDir"/*
+  do
+      if [[ -d $folder ]]; then
+          # if a limiter is passed as {{#posts:3}} for the most recent 3 posts
+          if((postCount != 0)); then
+              if ((iteration >= $postCount)); then
+                  break  # Exit the loop when the maximum iterations are reached
+              fi
+              ((iteration++))
+          fi
+
+          # Extract the file name
+          file_name=$(basename -- "$folder")
+
+          # Load the post template
+          local post_string="$(<'source/_include/_post.html')"
+          link="/posts/$file_name/"
+
+          # Load the article metadata and smoosh them with the template
+          POSTDATA="$(<"$folder/article.conf")"
+          for DATA in $POSTDATA; do
+              DATANAME="${DATA%%:*}"
+              DATANAME=$(echo "$DATANAME" | xargs)
+              DATAVAL="${DATA#*:}"
+              DATAVAL=$(echo "$DATAVAL" | xargs)
+              if [ "$DATANAME" == "preview" ]; then
+                  DATAVAL="/posts/$file_name/${DATAVAL}"
+              fi
+              post_string="${post_string//\{\{${DATANAME}\}\}/${DATAVAL}}"
+          done
+
+          post_string="${post_string//\{\{link\}\}/${link}}"
+          result="$result\n$post_string"
+      fi
+
+  done
+  result="$result\n"
+
+  IFS="$OLDIFS"
+  echo -e "$result"
+}
 
 function prerenderTemplate {
     local templateFile="$1"
@@ -58,7 +108,6 @@ function prerenderTemplate {
 
     # INCLUDES
     # Insert the content of a file into another
-    # Most common case is to include footer, or navigation
     # Example: <!--#include:_include/_footer.html-->
     # ---------------------------------------------------------------
     local INCLUDES=$(echo -n "$templateContent"|perl -nle 'print $& if m/\{\{\s*#include:.*}}/')
@@ -67,9 +116,7 @@ function prerenderTemplate {
         local INCLFNAME=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#include:).*?(?=}})/')
         local INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
         # Escape & in the imported content since it's gonna be processed again
-        # Might be irrelevant now that we replace all & at the beginning?
-        # INCLFCONTENT="${INCLFCONTENT//&/\\&}"
-        INCLFCONTENT="${INCLFCONTENT//&/$replacementString}"
+        # INCLFCONTENT="${INCLFCONTENT//&/$replacementString}"
         templateContent="${templateContent//$empty/$INCLFCONTENT}"
     done
 
@@ -132,51 +179,11 @@ function prerenderTemplate {
     # List of all the posts in the folder defined as postsDir as a <ul>
     # Example: {{#posts:0}}
     # ---------------------------------------------------------------
-    local POSTS=$(echo -n "$templateContent"|perl -nle 'print $& if m/\{\{\s*#posts:.*}}/')
-
-    for empty in $POSTS; do
-        local POSTSLISTCONTENT=""
+    local posts=$(echo -n "$templateContent"|perl -nle 'print $& if m/\{\{\s*#posts:.*}}/')
+    for empty in $posts; do
         local postCount=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#posts:).*?(?=}})/')
-        local iteration=0
-
-        for folder in "$postsDir"/*
-        do
-            if [[ -d $folder ]]; then
-                # if a limiter is passed as {{#posts:3}} for the most recent 3 posts
-                if((postCount != 0)); then
-                    if ((iteration >= $postCount)); then
-                        break  # Exit the loop when the maximum iterations are reached
-                    fi
-                    ((iteration++))
-                fi
-
-                # Extract the file name
-                file_name=$(basename -- "$folder")
-
-                local post_string="$(<'source/_include/_post.html')"
-                link="/posts/$file_name/"
-
-                POSTDATA="$(<"$folder/article.conf")"
-                for DATA in $POSTDATA; do
-                    DATANAME="${DATA%%:*}"
-                    DATANAME=$(echo "$DATANAME" | xargs)
-                    DATAVAL="${DATA#*:}"
-                    DATAVAL=$(echo "$DATAVAL" | xargs)
-                    if [ "$DATANAME" == "preview" ]; then
-                        DATAVAL="/posts/$file_name/${DATAVAL}"
-                    fi
-                    post_string="${post_string//\{\{${DATANAME}\}\}/${DATAVAL}}"
-                done
-
-                post_string="${post_string//\{\{link\}\}/${link}}"
-                POSTSLISTCONTENT="$POSTSLISTCONTENT\n$post_string"
-            fi
-
-        done
-        POSTSLISTCONTENT="$POSTSLISTCONTENT\n"
-        templateContent="${templateContent//$empty/$POSTSLISTCONTENT}"
+        templateContent="${templateContent//$empty/$(generatePostList ${postCount})}"
     done
-
 
     # MARKDOWN
     # Render markdown file inline
@@ -196,18 +203,17 @@ function prerenderTemplate {
 
 function renderTemplate {
     local TPLTEXT="$(prerenderTemplate $1)"
-
-    # Local variables with <!--#set-->
-    local SETS=$(echo -n "$TPLTEXT"|perl -nle 'print $& if m/\{\{#set:.*?}}/')
-    local L=''
     OLDIFS="$IFS"
     IFS=$'\n'
 
-    for L in $SETS; do
-        local SET=$(echo -n "$L"|perl -nle 'print $& if m/(?<=#set:).*?(?=}})/')
+    # Local variables with <!--#set-->
+    local SETS=$(echo -n "$TPLTEXT"|perl -nle 'print $& if m/\{\{#set:.*?}}/')
+    local empty=''
+    for empty in $SETS; do
+        local SET=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#set:).*?(?=}})/')
         local SETVAR="${SET%%=*}"
         local SETVAL="${SET#*=}"
-        TPLTEXT="${TPLTEXT//$L/}"
+        TPLTEXT="${TPLTEXT//$empty/}"
         TPLTEXT="${TPLTEXT//\{\{${SETVAR}\}\}/${SETVAL}}"
     done
 
@@ -250,49 +256,40 @@ do
     if [[ -d $folder ]]; then
         # Extract the file name
         folder_name=$(basename -- "$folder")
+
         # Convert the markdown to HTML
         converted_markdown="$(perl markdown.pl --html4tags "$folder/article.md")"
+        converted_markdown="${converted_markdown//&amp;/$replacementString}"
         converted_markdown="${converted_markdown//&/$replacementString}"
 
-        # echo $converted_markdown
         # Grab the template and replace {{#slot}} with the generate html
-        templateOutput="$(<"$templateDir/$postTemplate")"
+        # templateOutput="$(<"$templateDir/$postTemplate")"
+        templateOutput="$(prerenderTemplate "$templateDir/$postTemplate")"
+
+        # Slot the rendered markdown in the {{slot}} of the template
         templateOutput="${templateOutput//\{\{#slot\}\}/${converted_markdown}}"
 
-        # Include code copied from render function
-        # TODO: isolate in it's own function
-        INCLUDES=$(echo -n "$templateOutput"|perl -nle 'print $& if m/\{\{\s*#include:.*}}/')
-
-        for empty in $INCLUDES; do
-            INCLFNAME=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#include:).*?(?=}})/')
-            INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
-            # Escape & in the imported content since it's gonna be processed again
-            # Might be irrelevant now that we replace all & at the beginning?
-            # INCLFCONTENT="${INCLFCONTENT//&/\\&}"
-            INCLFCONTENT="${INCLFCONTENT//&/$replacementString}"
-            templateOutput="${templateOutput//$empty/$INCLFCONTENT}"
-        done
-
-        # TODO: This code is duplicated from the render function
-        # All those functions (bash, markdown, include) should be isolated
-        SCRIPTS=$(echo -n "$templateOutput"|perl -nle 'print $& if m/\{\{\s*#bash:.*}}/')
-
-        for empty in $SCRIPTS; do
-            COMMAND=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#bash:).*?(?=}})/')
-
-            OUTPUTCONTENT=$(eval $COMMAND)
-            templateOutput="${templateOutput//$empty/$OUTPUTCONTENT}"
-        done
-
-        SETS=$(echo -n "$templateOutput"|perl -nle 'print $& if m/\{\{#set:.*?}}/')
-
         # Local variables with <!--#set-->
+        SETS=$(echo -n "$templateOutput"|perl -nle 'print $& if m/\{\{#set:.*?}}/')
         for empty in $SETS; do
-            local SET=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#set:).*?(?=}})/')
-            local SETVAR="${SET%%=*}"
-            local SETVAL="${SET#*=}"
+            SET=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#set:).*?(?=}})/')
+            SETVAR="${SET%%=*}"
+            SETVAL="${SET#*=}"
             templateOutput="${templateOutput//$empty/}"
             templateOutput="${templateOutput//\{\{${SETVAR}\}\}/${SETVAL}}"
+        done
+
+        # Article variables from the article.conf file
+        POSTDATA="$(<"$folder/article.conf")"
+        for DATA in $POSTDATA; do
+            DATANAME="${DATA%%:*}"
+            DATANAME=$(echo "$DATANAME" | xargs)
+            DATAVAL="${DATA#*:}"
+            DATAVAL=$(echo "$DATAVAL" | xargs)
+            if [ "$DATANAME" == "preview" ]; then
+                DATAVAL="posts/$folder_name/${DATAVAL}"
+            fi
+            templateOutput="${templateOutput//\{\{${DATANAME}\}\}/${DATAVAL}}"
         done
 
         # Global variables from the dataFile
@@ -303,13 +300,8 @@ do
             templateOutput="${templateOutput//\{\{${DATANAME}\}\}/${DATAVAL}}"
         done
 
-        # Article variables from the article.conf file
-        POSTDATA="$(<"$folder/article.conf")"
-        for DATA in $POSTDATA; do
-            DATANAME="${DATA%%:*}"
-            DATAVAL="${DATA#*:}"
-            templateOutput="${templateOutput//\{\{${DATANAME}\}\}/${DATAVAL}}"
-        done
+        # Put back the &
+        templateOutput="${templateOutput//$replacementString/\&}"
 
         # Copy the folder, since it might contain assets
         rsync -a "$folder" "${outputDir}/posts/"

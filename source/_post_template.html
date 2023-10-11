@@ -27,18 +27,29 @@
             margin: 0 auto;
         }
 
-        .markdown > figure {
-            margin-left: -6vw;
-            width: 100vw;
+        .markdown > p > img {
+            display: block;
+            margin-left: -4vw;
+            width: calc(100% + 8vw);
+            border-radius: var(--border-radius-large);
         }
 
-        .markdown > figure > figcaption {
+        /* .markdown > p > img {
+          display: block;
+          width: 100%;
+        } */
+
+        /* .markdown > figure > figcaption {
             display: none;
-        }
+        } */
 
         @media (max-width: 672px) {
-            .markdown > figure {
+            /* .markdown > p > img {
                 margin-left: calc(var(--outer) * -1);
+            } */
+
+            .markdown > p > img {
+                border-radius: 0;
             }
         }
 

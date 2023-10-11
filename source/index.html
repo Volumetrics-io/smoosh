@@ -2,110 +2,116 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
 
 <!--
-{{#set:title=Home & test}}
-{{#set:description=Make your spatial app a reality & test}}
-{{#set:previewImage=static/opengraph.jpg}}
+{{#set:title=Home}}
+{{#set:description=Make your spatial app a reality}}
+{{#set:preview=static/opengraph.jpg}}
 -->
 
 {{#include:source/_include/_head.html}}
 
-    <body class="landing">
-        {{#include:source/_include/_nav.html}}
-            {{#include:source/_include/_3dheader.html}}
+  <body class="landing">
+    {{#include:source/_include/_nav.html}}
+      {{#include:source/_include/_3dheader.html}}
 
-                <main class="gap-space landing">
-                    <h1 class="constraint">{{description}}</h1>
-                    <p class="constraint chapeau">Create web-based spatial experiences for mixed-reality, in mixed reality.<br />We just started to build, but you can follow our progress already!</p>
+        <main class="gap-space landing">
+          <h1 class="constraint">{{description}}</h1>
+          <p class="constraint chapeau">Create web-based spatial experiences for mixed-reality, in mixed reality.<br />We just started to build, but you can follow our progress already!</p>
 
-                    <section>
-                        <!-- <h2 class="constraint">Follow our progress</h2> -->
-                        <div class="triptych">
-                            <article class="padded card">
-                                <h3>Follow on Mastodon</h3>
-                                <a class="button social" href="https://volumetrics.social/public/local" target="_blank">
-                                    <img src="/static/assets/profile.png" alt="The Volumetrics logo" />
-                                    <address>
-                                        <b>Local feed</b>
-                                        <small>volumetrics.social</small>
-                                    </address>
-                                </a>
-                                <a rel="me" class="button social" href="https://volumetrics.social/@Michael" target="_blank">
-                                    <img src="/static/assets/michael.jpg" alt="Michael, looking at the camera and laughing. Short dark hair, under a tree, in the sun." />
-                                    <address>
-                                        <b>Michael</b>
-                                        <small>@Michael</small>
-                                    </address>
-                                </a>
-                                <a rel="me" class="button social" href="https://volumetrics.social/@lobau" target="_blank">
-                                    <img src="/static/assets/laurent.jpg" alt="Laurent, looking at the camera and smiling. Short dark hair, glasses, and a scarf." />
-                                    <address>
-                                        <b>Laurent</b>
-                                        <small>@lobau</small>
-                                    </address>
-                                </a>
-                            </article>
-                            <article class="padded card">
-                                <h3 id="subscribe">Receive the newsletter</h3>
-                                <p class="grow">A recap of our week of progress, straight to your inbox.</p>
-                                <form action="https://formspree.io/f/mwkdodvy" method="POST">
-                                    <label for="email">
-                                        <span>Your email address</span>
-                                        <input id="email" type="email" name="email" placeholder="alice@wonderland.com" aria-label="email" required>
-                                    </label>
-                                    <button class="cta" type="submit">Receive the newsletter</button>
-                                </form>
-                            </article>
-                            <article class="card no-gap">
-                                <article class="padded">
-                                    <h3>Watch on Youtube</h3>
-                                    <p>We'll regularely post demos, experiments, and more.</p>
-                                </article>
-                                <a class="youtube grow" href="https://www.youtube.com/@Volumetrics-io" target="_blank">
-                                    <img class="youtube" src="/static/assets/youtube.jpg" alt="A preview of a YouTube video" />
-                                </a>
-                            </article>
-                        </div>
-                    </section>
+          <section>
+            <!-- <h2 class="constraint">Follow our progress</h2> -->
+            <div class="triptych">
+              <article class="padded card">
+                <h3>Follow on Mastodon</h3>
+                <a class="button social" href="https://volumetrics.social/public/local" target="_blank">
+                  <img src="/static/assets/profile.png" alt="The Volumetrics logo" />
+                  <address>
+                    <b>Local feed</b>
+                    <small>volumetrics.social</small>
+                  </address>
+                </a>
+                <a rel="me" class="button social" href="https://volumetrics.social/@Michael" target="_blank">
+                  <img src="/static/assets/michael.jpg" alt="Michael, looking at the camera and laughing. Short dark hair, under a tree, in the sun." />
+                  <address>
+                    <b>Michael</b>
+                    <small>@Michael</small>
+                  </address>
+                </a>
+                <a rel="me" class="button social" href="https://volumetrics.social/@lobau" target="_blank">
+                  <img src="/static/assets/laurent.jpg" alt="Laurent, looking at the camera and smiling. Short dark hair, glasses, and a scarf." />
+                  <address>
+                    <b>Laurent</b>
+                    <small>@lobau</small>
+                  </address>
+                </a>
+              </article>
+              <article class="padded card">
+                <h3 id="subscribe">Receive the newsletter</h3>
+                <p class="grow">A recap of our week of progress, straight to your inbox.</p>
+                <form action="https://formspree.io/f/mwkdodvy" method="POST">
+                  <label for="email">
+                    <span>Your email address</span>
+                    <input id="email" type="email" name="email" placeholder="alice@wonderland.com" aria-label="email" required>
+                  </label>
+                  <button class="cta" type="submit">Receive the newsletter</button>
+                </form>
+              </article>
+              <article class="card no-gap">
+                <article class="padded">
+                  <h3>Watch on Youtube</h3>
+                  <p>We'll regularely post demos, experiments, and more.</p>
+                </article>
+                <a class="youtube grow" href="https://www.youtube.com/@Volumetrics-io" target="_blank">
+                  <img class="youtube" src="/static/assets/youtube.jpg" alt="A preview of a YouTube video" />
+                </a>
+              </article>
+            </div>
+          </section>
 
-                    <section>
-                        <h2 class="constraint">What are we building?</h2>
-                        <p class="constraint">We are building two things: an open-source UI library made for spatial web apps, and a full IDE, to code, collaborate, and deploy apps directly from the headset.
-                        <div class="diptych">
-                            <fieldset>
-                                <legend>A spatial UI library</legend>
-                                <ol>
-                                    <li><b>Open-source and extendable</b>: Built on top of web standards, you can implement custom elements and contribute to the ecosystem.</li>
-                                    <li><b>Familiar and powerful</b>: Looks and feels like existing libraries, but designed from the ground up for mixed-reality. Start with 2D and ease your way into creating 3D content.</li>
-                                    <li><b>All-in-one</b>: Asset management, physics, and user interaction come built in, so you can spend less time laying the foundation and more time building your app.</li>
-                                </ol>
-                                <a class="button cta">See on Github</a>
-                            </fieldset>
-                            <fieldset>
-                                <legend>A spatial experience builder</legend>
-                                <ol>
-                                    <li><b>No additional workstation required</b>: You don’t need a computer to use your computer: cloud-based and accessible from the web.</li>
-                                    <li><b>Spatial native</b>: No longer tethered to a 2D screen, designers can edit UI and 3D content with their hands through a spatial no-code interface, and developers can edit code on the fly with a
-                                        bluetooth keyboard.</li>
-                                    <li><b>Multi-tiered</b>: Some features will be gated behind a paid wall. Yes, this is how we make money!</li>
-                                </ol>
-                                <a class="button cta disabled">Join waiting list</a>
-                            </fieldset>
-                        </div>
-                    </section>
+          <section>
+            <h2 class="constraint">What are we building?</h2>
+            <p class="constraint">We are building two things: an open-source UI library made for spatial web apps, and a full IDE, to code, collaborate, and deploy apps directly from the headset.
+            <div class="diptych">
+              <fieldset>
+                <legend>A spatial UI library</legend>
+                <ol>
+                  <li><b>Open-source and extendable</b>: Built on top of web standards, you can implement custom elements and contribute to the ecosystem.</li>
+                  <li><b>Familiar and powerful</b>: Looks and feels like existing libraries, but designed from the ground up for mixed-reality. Start with 2D and ease your way into creating 3D content.</li>
+                  <li><b>All-in-one</b>: Asset management, physics, and user interaction come built in, so you can spend less time laying the foundation and more time building your app.</li>
+                </ol>
+                <a class="button cta">See on Github</a>
+              </fieldset>
+              <fieldset>
+                <legend>A spatial experience builder</legend>
+                <ol>
+                  <li><b>No additional workstation required</b>: You don’t need a computer to use your computer: cloud-based and accessible from the web.</li>
+                  <li><b>Spatial native</b>: No longer tethered to a 2D screen, designers can edit UI and 3D content with their hands through a spatial no-code interface, and developers can edit code on the fly with a
+                    bluetooth keyboard.</li>
+                  <li><b>Multi-tiered</b>: Some features will be gated behind a paid wall. Yes, this is how we make money!</li>
+                </ol>
+                <a class="button cta disabled">Join waiting list</a>
+              </fieldset>
+            </div>
+          </section>
 
-                    <section>
-                        {{#include:source/_include/_hiring_banner.html}}
-                    </section>
+          <section>
+            {{#include:source/_include/_hiring_banner.html}}
+          </section>
 
-                    <section>
-                        <h2 class="constraint">The latest posts</h2>
-                        <div class="triptych">
-                            {{#posts:3}}
-                        </div>
-                    </section>
-                </main>
+          <section>
+            <h2 class="constraint">The latest posts</h2>
+            <div class="triptych">
+              {{#posts:3}}
+            </div>
+          </section>
+        </main>
 
-                {{#include:source/_include/_footer.html}}
-    </body>
+        <main>
+          <section class="constraint">
+            {{#markdown:README.md}}
+          </section>
+        </main>
+
+        {{#include:source/_include/_footer.html}}
+  </body>
 
 </html>
