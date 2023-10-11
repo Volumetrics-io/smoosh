@@ -36,22 +36,22 @@ postsDir='source/posts'
 postTemplate='_post_template.html'
 
 # Pandoc is the only dependency beyond GNU
-if ! command -v "pandoc" &> /dev/null; then
-    echo -e "🚨 Pandoc not installed!\n"
-    exit 1
-fi
+# if ! command -v "pandoc" &> /dev/null; then
+#     echo -e "🚨 Pandoc not installed!\n"
+#     exit 1
+# fi
 
 # Support for macOS
-if [[ $OSTYPE == 'darwin'* ]]; then
-    if ! command -v "ggrep" &> /dev/null; then
-        if ! command -v "brew" &> /dev/null; then
-            echo -e "🚨 Brew not installed!\n"
-            exit 1
-        fi
-        brew install grep
-        alias grep=ggrep
-    fi
-fi
+# if [[ $OSTYPE == 'darwin'* ]]; then
+#     if ! command -v "ggrep" &> /dev/null; then
+#         if ! command -v "brew" &> /dev/null; then
+#             echo -e "🚨 Brew not installed!\n"
+#             exit 1
+#         fi
+#         brew install grep
+#         alias grep=ggrep
+#     fi
+# fi
 
 # Avoid "&" to be interpreted by bash
 # Temporarely replaces & with {{and}}
@@ -90,9 +90,13 @@ function prerenderTemplate {
     # Most common case is to include footer, or navigation
     # Example: <!--#include:_include/_footer.html-->
     # ---------------------------------------------------------------
-    local INCLUDES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#include:.*}}')
+    # local INCLUDES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#include:.*}}')
+    local INCLUDES=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/\{\{\s*#include:.*}}/')
+
     for empty in $INCLUDES; do
-        local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
+        # local INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
+        local INCLFNAME=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#include:).*?(?=}})/')
+
         local INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
         # Escape & in the imported content since it's gonna be processed again
         # Might be irrelevant now that we replace all & at the beginning?
@@ -107,11 +111,17 @@ function prerenderTemplate {
     # The values in the csv are applied to the variabled in the template
     # For example, the values in the column "name" in the csv will remplate {{name}} templates
     # ---------------------------------------------------------------
-    local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*}}')
+    # local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*}}')
+    local MODULES=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/\{\{\s*#data:.*#template:.*}}/')
+
     # local MODULES=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#data:.*#template:.*#parent:.*}}')
     for empty in $MODULES; do
-        local MODDATA=$(echo -n "$empty"|grep -Po '(?<=#data:).*?(?=#template:)')
-        local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*(?=}})')
+        # local MODDATA=$(echo -n "$empty"|grep -Po '(?<=#data:).*?(?=#template:)')
+        local MODDATA=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#data:).*?(?=#template:)/')
+
+        # local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*(?=}})')
+        local MODTPLT=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#template:).*(?=}})/')
+
         # local MODTPLT=$(echo -n "$empty"|grep -Po '(?<=#template:).*?(?=#parent:)')
         # local parent=$(echo -n "$empty"|grep -Po '(?<=#parent:).*?(?=}})')
 
@@ -151,9 +161,13 @@ function prerenderTemplate {
     # Can be used in footer for copyright info for example
     # <!--#bash:date +"%Y"--> — All Rights Reserved
     # ---------------------------------------------------------------
-    local SCRIPTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#bash:.*}}')
+    # local SCRIPTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#bash:.*}}')
+    local SCRIPTS=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/\{\{\s*#bash:.*}}/')
+
     for empty in $SCRIPTS; do
-        local COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=}})')
+        # local COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=}})')
+        local COMMAND=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#bash:).*?(?=}})/')
+
         local OUTPUTCONTENT=$(eval $COMMAND)
         TPLCONTENT="${TPLCONTENT//$empty/$OUTPUTCONTENT}"
     done
@@ -162,10 +176,14 @@ function prerenderTemplate {
     # List of all the posts in the folder defined as postsDir as a <ul>
     # Example: {{#posts:0}}
     # ---------------------------------------------------------------
-    local POSTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#posts:.*}}')
+    # local POSTS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#posts:.*}}')
+    # local POSTS=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/\{\{\s*#posts:.*}}/')
+
     for empty in $POSTS; do
         local POSTSLISTCONTENT=""
-        local postCount=$(echo -n "$empty"|grep -Po '(?<=#posts:).*?(?=}})')
+        # local postCount=$(echo -n "$empty"|grep -Po '(?<=#posts:).*?(?=}})')
+        local postCount=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#posts:).*?(?=}})/')
+
         local iteration=0
         # echo $postCount
         for folder in "$postsDir"/*
@@ -336,7 +354,8 @@ do
         INCLUDES=$(echo -n "$templateOutput"|perl -nle 'print $& if m/\{\{\s*#include:.*}}/')
 
         for empty in $INCLUDES; do
-            INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
+            # INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
+            INCLFNAME=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#include:).*?(?=}})/')
             INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
             # Escape & in the imported content since it's gonna be processed again
             # Might be irrelevant now that we replace all & at the beginning?
@@ -346,17 +365,25 @@ do
 
         # TODO: This code is duplicated from the render function
         # All those functions (bash, markdown, include) should be isolated
-        SCRIPTS=$(echo -n "$templateOutput"|grep -Po '{{\s*#bash:.*}}')
+        # SCRIPTS=$(echo -n "$templateOutput"|grep -Po '{{\s*#bash:.*}}')
+        SCRIPTS=$(echo -n "$templateOutput"|perl -nle 'print $& if m/\{\{\s*#bash:.*}}/')
+
         for empty in $SCRIPTS; do
-            COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=}})')
+            # COMMAND=$(echo -n "$empty"|grep -Po '(?<=#bash:).*?(?=}})')
+            COMMAND=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#bash:).*?(?=}})/')
+
             OUTPUTCONTENT=$(eval $COMMAND)
             templateOutput="${templateOutput//$empty/$OUTPUTCONTENT}"
         done
 
-        SETS=$(echo -n "$templateOutput"|grep -Po '{{#set:.*?}}')
+        # SETS=$(echo -n "$templateOutput"|grep -Po '{{#set:.*?}}')
+        SETS=$(echo -n "$templateOutput"|perl -nle 'print $& if m/\{\{#set:.*?}}/')
+
         # Local variables with <!--#set-->
         for empty in $SETS; do
-            local SET=$(echo -n "$empty"|grep -Po '(?<=#set:).*?(?=}})')
+            # local SET=$(echo -n "$empty"|grep -Po '(?<=#set:).*?(?=}})')
+            local SET=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#set:).*?(?=}})/')
+
             local SETVAR="${SET%%=*}"
             local SETVAL="${SET#*=}"
             templateOutput="${templateOutput//$empty/}"
