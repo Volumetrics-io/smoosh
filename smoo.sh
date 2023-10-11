@@ -41,6 +41,12 @@ postTemplate='_post_template.html'
 #     exit 1
 # fi
 
+# Check if rsync is available
+if ! command -v rsync > /dev/null; then
+      echo -e "🚨 rsync is not installed!\n"
+    exit 1
+fi
+
 # Support for macOS
 # if [[ $OSTYPE == 'darwin'* ]]; then
 #     if ! command -v "ggrep" &> /dev/null; then
