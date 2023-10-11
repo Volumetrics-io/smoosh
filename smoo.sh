@@ -185,7 +185,7 @@ function prerenderTemplate {
         local postCount=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#posts:).*?(?=}})/')
 
         local iteration=0
-        echo $postCount
+        # echo $postCount
         for folder in "$postsDir"/*
         do
             if [[ -d $folder ]]; then
