@@ -24,12 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 LICENSE
 
-# This script only works with GNU sed. So if you have both BSD sed
-# and GNU sed installed (often happens on OSX), you will need to alias GNU sed.
-# If you get the error "sed: illegal option -- r", you will need to apply this fix.
-# shopt -s expand_aliases
-# alias sed=gsed
-
 # set -x
 
 # Data files and folders
@@ -60,10 +54,9 @@ if [[ $OSTYPE == 'darwin'* ]]; then
 fi
 
 # Avoid "&" to be interpreted by bash
-# Generate a random remplacement string to temporarely replace
-# the & character while we process all the template files.
+# Temporarely replaces & with {{and}}
+# while we process all the template files.
 # That avoid bash to interpret the & in our csv, md, or html files
-# replacementString=$(echo $RANDOM | md5sum | head -c 20; echo;)
 replacementString="{{and}}"
 
 function test {
@@ -78,7 +71,8 @@ function test {
     # Code here
 
     IFS="$OLDIFS"
-    echo -n -e "$result"
+    # echo -n -e "$result"
+    echo -e "$result"
 }
 
 
@@ -189,32 +183,47 @@ function prerenderTemplate {
                 file_name=$(basename -- "$folder")
 
                 # Extract frontmatter & remove the first and last lines (---)
-                frontmatter=$(sed -n '/---/,/---/p' "$postsDir/$file_name/article.md" | sed '1d;$d')
+                # frontmatter=$(sed -n '/---/,/---/p' "$postsDir/$file_name/article.md" | sed '1d;$d')
+                #
+                # # The array holding the frontmatter variables
+                # declare -A data
+                #
+                # while IFS= read -r line; do
+                #     # Extract key and value, splitting by ":"
+                #     IFS=":" read -r key value <<< "$line"
+                #
+                #     # Trim leading and trailing whitespace from the key and value
+                #     key=$(echo "$key" | xargs)
+                #     value=$(echo "$value" | xargs)
+                #
+                #     # Store the key-value pair in the associative array
+                #     data["$key"]="$value"
+                # done <<< "$frontmatter"
 
-                # The array holding the frontmatter variables
-                declare -A data
 
-                while IFS= read -r line; do
-                    # Extract key and value, splitting by ":"
-                    IFS=":" read -r key value <<< "$line"
-
-                    # Trim leading and trailing whitespace from the key and value
-                    key=$(echo "$key" | xargs)
-                    value=$(echo "$value" | xargs)
-
-                    # Store the key-value pair in the associative array
-                    data["$key"]="$value"
-                done <<< "$frontmatter"
 
                 local post_string="$(<'source/_include/_post.html')"
                 link="/posts/$file_name/"
+                # preview="/posts/$file_name/${data[preview]}"
 
-                previewURL="/posts/$file_name/${data[preview]}"
-                post_string="${post_string//\{\{title\}\}/${data[title]}}"
-                post_string="${post_string//\{\{author\}\}/${data[author]}}"
-                post_string="${post_string//\{\{date\}\}/${data[date]}}"
-                post_string="${post_string//\{\{description\}\}/${data[desc]}}"
-                post_string="${post_string//\{\{previewImage\}\}/${previewURL}}"
+                POSTDATA="$(<"$folder/article.conf")"
+                for DATA in $POSTDATA; do
+                    DATANAME="${DATA%%:*}"
+                    DATANAME=$(echo "$DATANAME" | xargs)
+                    DATAVAL="${DATA#*:}"
+                    DATAVAL=$(echo "$DATAVAL" | xargs)
+                    if [ "$DATANAME" == "preview" ]; then
+                        DATAVAL="/posts/$file_name/${DATAVAL}"
+                    fi
+                    post_string="${post_string//\{\{${DATANAME}\}\}/${DATAVAL}}"
+                done
+
+
+                # post_string="${post_string//\{\{title\}\}/${data[title]}}"
+                # post_string="${post_string//\{\{author\}\}/${data[author]}}"
+                # post_string="${post_string//\{\{date\}\}/${data[date]}}"
+                # post_string="${post_string//\{\{description\}\}/${data[desc]}}"
+                # post_string="${post_string//\{\{previewImage\}\}/${previewURL}}"
                 post_string="${post_string//\{\{link\}\}/${link}}"
 
                 POSTSLISTCONTENT="$POSTSLISTCONTENT\n$post_string"
@@ -230,28 +239,39 @@ function prerenderTemplate {
     # Render markdown file inline
     # Example: <!--#markdown:README.md-->
     # ---------------------------------------------------------------
-    local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
+    # local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
+    local MDS=$(echo -n "$TPLCONTENT"|perl -nle 'print $& if m/{{\s*#markdown:.*}}/')
     for empty in $MDS; do
-        local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
-        local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
+        # local MDNAME=$(echo -n "$empty"|grep -Po '(?<=#markdown:).*?(?=}})')
+        # local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
+        local MDNAME=$(echo -n "$empty"|perl -nle 'print $& if m/(?<=#markdown:).*?(?=}})/')
+
+        # local MDCONTENT="$(pandoc --columns 100 ${MDNAME})"
+        local MDCONTENT="$(perl markdown.pl --html4tags ${MDNAME})"
         MDCONTENT="${MDCONTENT//&/$replacementString}"
         TPLCONTENT="${TPLCONTENT//$empty/$MDCONTENT}"
     done
 
     IFS="$OLDIFS"
-    echo -n -e "$TPLCONTENT"
+    # echo -n -e "$TPLCONTENT"
+    echo -e "$TPLCONTENT"
 }
 
 function renderTemplate {
     local TPLTEXT="$(prerenderTemplate $1)"
 
     # Local variables with <!--#set-->
-    local SETS=$(echo -n "$TPLTEXT"|grep -Po '{{#set:.*?}}')
+    # local SETS=$(echo -n "$TPLTEXT"|grep -Po '{{#set:.*?}}')
+    # local MDS=$(echo -n "$TPLCONTENT"|grep -Po '{{\s*#markdown:.*}}')
+    local SETS=$(echo -n "$TPLTEXT"|perl -nle 'print $& if m/{{#set:.*?}}/')
+
     local L=''
     OLDIFS="$IFS"
     IFS=$'\n'
     for L in $SETS; do
-        local SET=$(echo -n "$L"|grep -Po '(?<=#set:).*?(?=}})')
+        # local SET=$(echo -n "$L"|grep -Po '(?<=#set:).*?(?=}})')
+        local SET=$(echo -n "$L"|perl -nle 'print $& if m/(?<=#set:).*?(?=}})/')
+
         local SETVAR="${SET%%=*}"
         local SETVAL="${SET#*=}"
         TPLTEXT="${TPLTEXT//$L/}"
@@ -270,10 +290,12 @@ function renderTemplate {
     TPLTEXT="${TPLTEXT//$replacementString/\&amp;}"
 
     # remove empty lines
-    local TPLTEXT=$(echo -n "$TPLTEXT"|grep -v '^$')
+    # local TPLTEXT=$(echo -n "$TPLTEXT"|grep -v '^$')
+    # local TPLTEXT=$(echo -n "$TPLTEXT"|perl -nle 'print $& if m/^$/')
 
     IFS="$OLDIFS"
-    echo -n -e "$TPLTEXT"
+    # echo -n -e "$TPLTEXT"
+    echo -e "$TPLTEXT"
 }
 
 #run main action
@@ -297,15 +319,22 @@ do
         # Extract the file name
         folder_name=$(basename -- "$folder")
         # Convert the markdown to HTML
-        converted_markdown="$(pandoc --columns 100 "$folder/article.md")"
+        # converted_markdown="$(pandoc --columns 100 "$folder/article.md")"
+        converted_markdown="$(perl markdown.pl --html4tags "$folder/article.md")"
 
+        # local MDCONTENT="$(perl markdown.pl --html4tags ${MDNAME})"
+        converted_markdown="${converted_markdown//&/$replacementString}"
+
+        # echo $converted_markdown
         # Grab the template and replace {{#slot}} with the generate html
         templateOutput="$(<"$templateDir/$postTemplate")"
         templateOutput="${templateOutput//\{\{#slot\}\}/${converted_markdown}}"
 
         # Include code copied from render function
         # TODO: isolate in it's own function
-        INCLUDES=$(echo -n "$templateOutput"|grep -Po '{{\s*#include:.*}}')
+        # INCLUDES=$(echo -n "$templateOutput"|grep -Po '{{\s*#include:.*}}')
+        INCLUDES=$(echo -n "$templateOutput"|perl -nle 'print $& if m/{{\s*#include:.*}}/')
+
         for empty in $INCLUDES; do
             INCLFNAME=$(echo -n "$empty"|grep -Po '(?<=#include:).*?(?=}})')
             INCLFCONTENT="$(prerenderTemplate ${INCLFNAME})"
@@ -342,28 +371,38 @@ do
             templateOutput="${templateOutput//\{\{${DATANAME}\}\}/${DATAVAL}}"
         done
 
-        # Extract frontmatter & remove the first and last lines (---)
-        frontmatter=$(sed -n '/---/,/---/p' "$folder/article.md" | sed '1d;$d')
+        # Article variables from the article.conf file
+        POSTDATA="$(<"$folder/article.conf")"
+        for DATA in $POSTDATA; do
+            DATANAME="${DATA%%:*}"
+            DATAVAL="${DATA#*:}"
+            templateOutput="${templateOutput//\{\{${DATANAME}\}\}/${DATAVAL}}"
+        done
 
-        # The array holding the frontmatter variables
-        declare -A data
+        # # Extract frontmatter & remove the first and last lines (---)
+        # frontmatter=$(sed -n '/---/,/---/p' "$folder/article.md" | sed '1d;$d')
+        #
+        # # The array holding the frontmatter variables
+        # declare -A data
+        #
+        # while IFS= read -r line; do
+        #     # Extract key and value, splitting by ":"
+        #     IFS=":" read -r key value <<< "$line"
+        #
+        #     # Trim leading and trailing whitespace from the key and value
+        #     key=$(echo "$key" | xargs)
+        #     value=$(echo "$value" | xargs)
+        #
+        #     echo "$key: $value"
+        #
+        #     # Store the key-value pair in the associative array
+        #     data["$key"]="$value"
+        # done <<< "$frontmatter"
 
-        while IFS= read -r line; do
-            # Extract key and value, splitting by ":"
-            IFS=":" read -r key value <<< "$line"
-
-            # Trim leading and trailing whitespace from the key and value
-            key=$(echo "$key" | xargs)
-            value=$(echo "$value" | xargs)
-
-            # Store the key-value pair in the associative array
-            data["$key"]="$value"
-        done <<< "$frontmatter"
-
-        previewURL="posts/$folder_name/${data[preview]}"
-        templateOutput="${templateOutput//\{\{title\}\}/${data[title]}}"
-        templateOutput="${templateOutput//\{\{description\}\}/${data[desc]}}"
-        templateOutput="${templateOutput//\{\{previewImage\}\}/${previewURL}}"
+        # previewURL="posts/$folder_name/${data[preview]}"
+        # templateOutput="${templateOutput//\{\{title\}\}/${data[title]}}"
+        # templateOutput="${templateOutput//\{\{description\}\}/${data[desc]}}"
+        # templateOutput="${templateOutput//\{\{previewImage\}\}/${previewURL}}"
 
         # Copy the folder, since it might contain assets
         cp -rd "$folder" "${outputDir}/posts/"

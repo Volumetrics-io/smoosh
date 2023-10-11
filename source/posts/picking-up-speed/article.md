@@ -1,10 +1,3 @@
----
-title: Picking up speed
-author: Michael Gutensohn
-date: 2023-09-26
-preview: preview.jpg
-desc: Elit egestas nulla enim vulputate proin fermentum a dolor euismod.
----
 # Picking up speed
 
 Michael and Laurent here. Thanks for subscribing to our newsletter!

@@ -1,10 +1,3 @@
----
-title: We raised money
-author: Michael Gutensohn
-date: 2023-09-24
-preview: laurent-michael-banner.jpg
-desc: Elit egestas nulla enim vulputate proin fermentum a dolor euismod.
----
 # We raised money.
 
 You shouldn’t need a computer to use your computer.

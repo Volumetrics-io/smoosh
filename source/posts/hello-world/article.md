@@ -1,10 +1,3 @@
----
-title: Hello World
-author: Michael Gutensohn
-date: 2023-09-12
-preview: twiv01-header.jpg
-desc: Elit egestas nulla enim vulputate proin fermentum a dolor euismod.
----
 # Hello World
 
 Michael and Laurent here. Thanks for subscribing to our newsletter!

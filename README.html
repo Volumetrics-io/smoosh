@@ -1,0 +1,75 @@
+<h1 id="_smoo_sh_">🔨 Smoo.sh</h1>
+
+<p>Smoo.sh is a stand-alone Bash script aimed at generating full-featured, routable static websites from reusable HTML snippets.
+This script is heavily based off <a href="https://gist.github.com/plugnburn/c2f7cc3807e8934b179e">Statix</a>. Here are the high-level features:</p>
+
+<table border="1" cellspacing="0" cellpadding="2" class="_markdown-table">
+  <tr class="_markdown-row-hdr"><th align="left">Feature</th><th align="left">How?</th></tr>
+  <tr class="_markdown-row-odd"><td align="left">Work with bash, with only <code>pandoc</code> as a dependency</td><td align="left"><code>./smoo.sh</code></td></tr>
+  <tr class="_markdown-row-even"><td align="left">Reuse HTML snippets anywhere in your HTML code</td><td align="left"><code>{{#include:path/to/snippet.html}}</code></td></tr>
+  <tr class="_markdown-row-odd"><td align="left">Generate HTML from a CSV file and an HTML snippet</td><td align="left"><code>{{#data:mywork.csv#template:card.html}}</code></td></tr>
+  <tr class="_markdown-row-even"><td align="left">define page specific variables</td><td align="left"><code>{{#set:title=Hi there 👋}}</code></td></tr>
+  <tr class="_markdown-row-odd"><td align="left">use defined variables anywhere you want</td><td align="left"><code>{{title}}</code></td></tr>
+  <tr class="_markdown-row-even"><td align="left">render markdown anywhere</td><td align="left"><code>{{#markdown:README.md}}</code></td></tr>
+  <tr class="_markdown-row-odd"><td align="left">Define site-wide variables like <code>base-name</code>, <code>base-url</code>, etc.</td><td align="left">Edit the file <code>_data.conf</code></td></tr>
+  <tr class="_markdown-row-even"><td align="left">Define routes, like about.html -> /about/.</td><td align="left">Edit the file <code>_routes.conf</code></td></tr>
+  <tr class="_markdown-row-odd"><td align="left">Blog support (see demo)</td><td align="left">Folders in the <code>/posts</code> folder</td></tr>
+  <tr class="_markdown-row-even"><td align="left">Index of blog posts with limiter</td><td align="left"><code>{{#posts:1}}</code></td></tr>
+  <tr class="_markdown-row-odd"><td align="left">Index of all blog posts</td><td align="left"><code>{{#posts:0}}</code></td></tr>
+  <tr class="_markdown-row-even"><td align="left">TODO:Generate sitemap.xml</td><td align="left">Automatic</td></tr>
+  <tr class="_markdown-row-odd"><td align="left">TODO:Generate RSS feed</td><td align="left">Automatic</td></tr>
+</table>
+
+<hr>
+
+<h1 id="_data_files_and_folders_">Data files and folders</h1>
+
+<ul>
+<li><strong>routes.conf</strong>: a file that maps each publicly accessible template to a SEO-friendly URL</li>
+<li><strong>data.conf</strong>: a file that contains global data for your website (base url, author, support email, etc)</li>
+<li><strong>source/</strong>: a folder containind all the template files that will be processed.</li>
+<li><strong>source/static</strong>: a folder for assets that are copied over without processing.</li>
+</ul>
+
+<p>This script is also lightweight. Aside from some standard file management commands such as <code>cp</code>, <code>mkdir</code> and <code>rm</code>, the only serious dependency for smoo.sh is GNU Grep compiled with PCRE support (i.e. the version that supports <code>-P</code> flag, included in most Linux distributions).</p>
+
+<p>This script is based off <a href="https://gist.github.com/plugnburn/c2f7cc3807e8934b179e">Statix - the simplest static website generator in Bash</a></p>
+
+<h2 id="_templates_">Templates</h2>
+
+<p>In smoo.sh, a template is a simple HTML file (or its partial) where also several special directives are allowed:</p>
+
+<ul>
+<li><strong>Include block</strong> (<code>{{#include:_include/_footer.html}}</code>) is a block that allows including another template to reuse existing HTML code.</li>
+<li><strong>Set block</strong> (<code>{{#set:variable=some new value}}</code>) is a block that allows setting a variable to the specific string value.</li>
+<li><strong>Use block</strong> (<code>{{variable}}</code>) is a block that inserts a previously set variable value.</li>
+</ul>
+
+<p>Note that if a variable is set twice, the first set block occurence overrides any others. So if you want to set some page-specific variables and want to be sure they will not be overwritten by any included templates, please put the appropriate set blocks at the very top of the page.</p>
+
+<h2 id="_inline_bash_">Inline bash</h2>
+
+<h2 id="_markdown_support_">Markdown support</h2>
+
+<h2 id="_site_configuration_">Site configuration</h2>
+
+<h2 id="_route_configuration_">Route configuration</h2>
+
+<p>To let smoo.sh know the entire structure of your website, it's mandatory to specify all routing in a separate file (say, <code>routes.conf</code>). This file contains the mapping of a physical template name (relative to your templates directory) and logical URL (relative to the supposed website root). Note that in order to avoid any building errors all URLs <strong>must</strong> end in <code>/</code> (forward slash). Physical names and URLs are separated with a colon (<code>:</code>). Each mapping pair is on a new line.</p>
+
+<p>Example of a typical <code>routes.conf</code> file:</p>
+
+<div class="_markdown-code-bt"><pre style="display:none"></pre><pre><code>index.html:/
+about.html:/about-us/
+contact.html:/contact/
+work.html:/portfolio/
+</code></pre></div>
+
+<h2 id="_build_process_">Build process</h2>
+
+<p>Just run the command in the base directory (where <code>source/</code> and <code>public/</code> are):</p>
+
+<div class="_markdown-code-bt"><pre style="display:none"></pre><pre><code>./smoo.sh
+</code></pre></div>
+
+<p>Everything but asset directory is mandatory here. If <code>&lt;asset directory&gt;</code> is not specified, output will contain just the generated HTML tree and nothing else will be copied. If <code>&lt;output directory&gt;</code> doesn't exist, it will be created, <strong>but if it does and is not empty, it will be completely overwritten, so be careful!</strong> After the build completes, you can transfer the output directory contents wherever you want to host it.</p>

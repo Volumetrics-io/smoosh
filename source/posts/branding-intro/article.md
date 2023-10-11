@@ -1,10 +1,3 @@
----
-title: Branding intro
-author: Laurent Baumann
-date: 2023-09-24
-preview: shape.jpg
-desc: Elit egestas nulla enim vulputate proin fermentum a dolor euismod.
----
 # Branding intro
 
 Hey there! Laurent writing.
@@ -23,23 +16,11 @@ Here is a useful exercise: imagine your brand as a person who just entered the r
 
 This first step is called brand attributes: a set of qualities that you are willing to display and defend. Here are Volumetrics'
 
-<div class="triptych">
-<fieldset><legend>Authentic</legend><ul>
-    <li>Honest</li>
-    <li>Ethical</li>
-    <li>Wholesome</li>
-</ul></fieldset>
-<fieldset><legend>Resilient</legend><ul>
-    <li>Timeless</li>
-    <li>Stable</li>
-    <li>Standard</li>
-</ul></fieldset>
-<fieldset><legend>Deliberate</legend><ul>
-    <li>Thoughtful</li>
-    <li>Opinionated</li>
-    <li>Measured</li>
-</ul></fieldset>
-</div>
+| Authentic | Resilient | Deliberate  |
+| --------- | --------- | ----------- |
+| Honest    | Timeless  | Thoughtful  |
+| Ethical   | Stable    | Opinionated |
+| Wholesome | Standard  | Measured    |
 
 Following are some examples of those attributes, translate into real actions.
 

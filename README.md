@@ -27,7 +27,6 @@ This script is heavily based off [Statix](https://gist.github.com/plugnburn/c2f7
 - __data.conf__: a file that contains global data for your website (base url, author, support email, etc)
 - __source/__: a folder containind all the template files that will be processed.
 - __source/static__: a folder for assets that are copied over without processing.
-<!-- - __output/__: a directory with optional files copied to the output website directory with no processing. -->
 
 This script is also lightweight. Aside from some standard file management commands such as `cp`, `mkdir` and `rm`, the only serious dependency for smoo.sh is GNU Grep compiled with PCRE support (i.e. the version that supports `-P` flag, included in most Linux distributions).
 
