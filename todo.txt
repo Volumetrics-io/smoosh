@@ -1,0 +1,4 @@
+Test and fix opengraph everywhere
+Sort the blog posts by recency
+Generate a RSS feed and link to it somewhere
+Fix margins on images in blog posts

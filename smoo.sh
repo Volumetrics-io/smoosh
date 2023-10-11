@@ -66,6 +66,22 @@ fi
 # replacementString=$(echo $RANDOM | md5sum | head -c 20; echo;)
 replacementString="{{and}}"
 
+function test {
+    local result="$1"
+    local empty=''
+
+    result="${result//&/$replacementString}"
+
+    OLDIFS="$IFS"
+    IFS=$'\n'
+
+    # Code here
+
+    IFS="$OLDIFS"
+    echo -n -e "$result"
+}
+
+
 function prerenderTemplate {
     local TPLFILE="$1"
     local TPLCONTENT="$(<$TPLFILE)"
@@ -192,7 +208,6 @@ function prerenderTemplate {
 
                 local post_string="$(<'source/_include/_post.html')"
                 link="/posts/$file_name/"
-                # echo $post_string
 
                 previewURL="/posts/$file_name/${data[preview]}"
                 post_string="${post_string//\{\{title\}\}/${data[title]}}"
@@ -202,11 +217,6 @@ function prerenderTemplate {
                 post_string="${post_string//\{\{previewImage\}\}/${previewURL}}"
                 post_string="${post_string//\{\{link\}\}/${link}}"
 
-                # local li_string="<div>
-                # <img src='/posts/$file_name/${data[preview]}' style='width: 100px; aspect-ratio: 5 / 3;' />
-                #   <p><a href='/posts/$file_name/'>${data[title]}</a> by ${data[author]} on ${data[date]}</p>
-                #   <p>${data[desc]}</p>
-                # </div>\n"
                 POSTSLISTCONTENT="$POSTSLISTCONTENT\n$post_string"
             fi
 
