@@ -4,7 +4,6 @@
             fill:var(--color-text);
             font-family:var(--font-header);
             font-size:60px;
-            /* white-space:pre; */
             font-variation-settings:'opsz' 50,'wght' 500;
         }
         .logo-inner-path {
@@ -19,11 +18,6 @@
             stroke-linecap:round;
             stroke:var(--color-text);
         }
-        /* @media (max-width: 672px) {
-            #logotype {
-                display: none;
-            }
-        } */
     </style>
     <text x="112" y="64" id="logotype">volumetrics</text>
     <path class="logo-inner-path" stroke-linejoin="round" d="M9 27.7c12.5-5.4 25.5-8.8 50.8-5.7m0 0c3.8 17.5 1.5 41.3-1.5 56.1M59.8 22c5.7-5.4 16.4-10.7 16.4-10.7"></path>

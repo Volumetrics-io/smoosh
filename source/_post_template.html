@@ -3,75 +3,27 @@
 
 {{#include:source/_include/_head.html}}
 
-    <style>
-        .markdown {
-            display: flex;
-            flex-direction: column;
-            gap: var(--outer);
-            width: 100%;
-            max-width: var(--mwdth);
-            margin: 0 auto;
-            /* overflow-x: hidden; */
-        }
+  <style>
+  {{#include:source/static/styles/markdown.css}}
+  </style>
 
-        .markdown>h1,
-        .markdown>h2,
-        .markdown>h3,
-        .markdown>p,
-        .markdown>ul,
-        .markdown>ol,
-        .markdown>li
-         {
-            width: 100%;
-            max-width: var(--hwdth);
-            margin: 0 auto;
-        }
+  <body>
+    {{#include:source/_include/_nav.html}}
 
-        .markdown > p > img {
-            display: block;
-            margin-left: -4vw;
-            width: calc(100% + 8vw);
-            border-radius: var(--border-radius-large);
-        }
+      <main class="gap-space">
+        <div class="markdown">
+          {{#slot}}
+        </div>
 
-        /* .markdown > p > img {
-          display: block;
-          width: 100%;
-        } */
+        <section>
+          <h2 class="constraint">The latest posts</h2>
+          <div class="triptych">
+            {{#posts:3}}
+          </div>
+        </section>
+      </main>
 
-        /* .markdown > figure > figcaption {
-            display: none;
-        } */
-
-        @media (max-width: 672px) {
-            /* .markdown > p > img {
-                margin-left: calc(var(--outer) * -1);
-            } */
-
-            .markdown > p > img {
-                border-radius: 0;
-            }
-        }
-
-    </style>
-
-    <body>
-        {{#include:source/_include/_nav.html}}
-
-            <main class="gap-space">
-                <div class="markdown">
-                    {{#slot}}
-                </div>
-
-                <section>
-                    <h2 class="constraint">The latest posts</h2>
-                    <div class="triptych">
-                        {{#posts:3}}
-                    </div>
-                </section>
-            </main>
-
-            {{#include:source/_include/_footer.html}}
-    </body>
+      {{#include:source/_include/_footer.html}}
+  </body>
 
 </html>

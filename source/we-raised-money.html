@@ -3,31 +3,64 @@
 
 <!--
 {{#set:title=We raised money}}
-{{#set:description=Our blog}}
-{{#set:preview=static/posts/we-raised-money/laurent-michael-banner.jpg}}
+{{#set:description=You shouldn't need a computer to use your computer}}
 -->
-{{#include:source/_include/_head.html}}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{sitename}} · {{title}}</title>
 
-  <body>
-    {{#include:source/_include/_nav.html}}
-      <!-- <main class="gap-space">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
 
-      </main> -->
+    <!-- SEO -->
+    <meta name="description" content="{{description}}" />
+    <meta name="keywords" content="{{keywords}}" />
 
-      <main class="gap-space">
-          <div class="markdown">
-              {{#markdown:source/posts/we-raised-money/article.md}}
-          </div>
+    <!-- Basic Open Graph -->
+    <meta content="{{title}}" itemProp="name" class="next-head" />
+    <meta content="{{description}}" itemProp="description" class="next-head" />
+    <meta content="{{siteurl}}/{{preview}}" itemProp="image" class="next-head" />
 
-          <section>
-              <h2 class="constraint">The latest posts</h2>
-              <div class="triptych">
-                  {{#posts:3}}
-              </div>
-          </section>
-      </main>
+    <!-- Generic Open Graph -->
+    <meta property="og:type" content="article" class="next-head" />
+    <meta content="{{title}}" property="og:title" class="next-head" />
+    <meta content="{{siteurl}}" property="og:url" class="next-head" />
+    <meta content="{{siteurl}}/{{preview}}" property="og:image" class="next-head" />
+    <meta content="{{description}}" property="og:description" class="next-head" />
+    <meta content="{{sitename}}" property="og:site_name" class="next-head" />
 
-      {{#include:source/_include/_footer.html}}
-  </body>
+    <script defer data-domain="volumetrics.io" src="https://plausible.io/js/script.js"></script>
+
+    <link rel="preload" href="/static/fonts/Bricolage.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/fonts/Onest-Regular.woff" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="/static/fonts/Onest-Bold.woff" as="font" type="font/woff" crossorigin />
+
+    <meta http-equiv="refresh" content="3; url='/posts/we-raised-money/'" />
+
+    <style>
+      /* Global style */
+      {{#include:source/static/styles/global.css}}
+
+      /* Design system */
+      {{#include:source/static/styles/system.css}}
+    </style>
+</head>
+
+
+    <body>
+        {{#include:source/_include/_nav.html}}
+
+            <main class="gap-space">
+                <section class="constraint"
+                style="height: 30rem; display:flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center;">
+                    <h1>{{title}}</h1>
+                    <p class="chapeau">This page has moved! You will be redirected.</p>
+                    <a class="cta" href="/posts/we-raised-money/">Go to page now</a>
+                </section>
+            </main>
+
+            {{#include:source/_include/_footer.html}}
+    </body>
 
 </html>

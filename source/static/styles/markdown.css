@@ -1,0 +1,76 @@
+.markdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--outer);
+  width: 100%;
+  max-width: var(--mwdth);
+  margin: 0 auto;
+  /* overflow-x: hidden; */
+}
+
+.markdown>h1,
+.markdown>h2,
+.markdown>h3,
+.markdown>p,
+.markdown>ul,
+.markdown>ol,
+.markdown>li {
+  width: 100%;
+  max-width: var(--hwdth);
+  margin: 0 auto;
+}
+
+.markdown>p>img {
+  display: block;
+  margin-left: -4vw;
+  width: calc(100% + 8vw);
+  border-radius: var(--border-radius-large);
+}
+
+.markdown>p>a,
+.markdown>p>a:link,
+.markdown>p>a:visited {
+  --color-text: var(--color-text);
+  --color-border: var(--color-border-static);
+  display: inline;
+  padding: 2px;
+  text-decoration: underline;
+  text-decoration-color: var(--color-cta);
+  text-decoration-thickness: 2px;
+  text-decoration-skip-ink: all;
+  text-underline-offset: 2px;
+  color: var(--color-text);
+  font-variation-settings: 'wght' 600;
+  font-weight: 600;
+  transition: all 0.2s;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.markdown>p>a:hover {
+  color: var(--color-cta-hover);
+  text-decoration-color: var(--color-cta-hover);
+  text-decoration-thickness: 4px;
+  text-underline-offset: 2px;
+}
+
+.markdown>p>a:active {
+  color: var(--color-cta-active);
+  text-decoration-color: var(--color-cta-active);
+}
+
+.markdown>p>a:focus {
+  outline: none;
+  color: var(--color-cta-active);
+  text-decoration-color: var(--color-button-ring);
+}
+
+.markdown>p>blockquote {
+
+}
+
+@media (max-width: 672px) {
+  .markdown>p>img {
+    border-radius: 0;
+  }
+}

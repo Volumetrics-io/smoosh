@@ -8,11 +8,11 @@ We’ve officially raised $1.1 million in seed funding from Abstract Ventures & 
 
 We’ll be using this funding to pursue our vision of a Spatial design and development platform where designers and developers of all types can build for mixed reality, in mixed reality.
 
-You can [read more in our press release](https://volumetrics.io/we-raised-money/).
+You can [read more in our press release](/posts/we-raised-money/).
 
 ## We’re hiring.
 
-Now that we can pay people, we’re diving right into looking for a great founding engineer. We’ve already got a few candidates in the pipeline, but please don't hesitate to share [the post](https://volumetrics.io/careers/) with anyone you might think is a good fit.
+Now that we can pay people, we’re diving right into looking for a great founding engineer. We’ve already got a few candidates in the pipeline, but please don't hesitate to share [the post](/careers/) with anyone you might think is a good fit.
 
 ## MR.js update
 

@@ -1,364 +1,361 @@
 .stack {
-    display: flex;
+  display: flex;
 }
 
 .padded {
-    padding: var(--outer);
+  padding: var(--outer);
 }
 
 .horizontal {
-    flex-direction: row;
-    flex-wrap: wrap;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .vertical {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 .grow {
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
 }
 
 .no-gap {
-    gap: 0;
+  gap: 0;
 }
 
 .state-separator {
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: end;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: end;
 }
 
 .no-events {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 .gap-inner {
-    gap: var(--inner);
+  gap: var(--inner);
 }
 
 .gap-inter {
-    gap: var(--inter);
+  gap: var(--inter);
 }
 
 .gap-outer {
-    gap: var(--outer);
+  gap: var(--outer);
 }
 
 .gap-space {
-    gap: var(--space);
+  gap: var(--space);
 }
 
 .box-shadow {
-    box-shadow: var(--button-shadow);
+  box-shadow: var(--button-shadow);
 }
 
 .triptych {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--outer);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--outer);
 }
 
 .diptych {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--outer);
-    align-items: start;
-    justify-content: start;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--outer);
+  align-items: start;
+  justify-content: start;
 }
 
 .card {
-    --color-background: var(--color-paper-card);
-    --color-focus-ring: var(--color-button-ring);
-    outline: 2px solid var(--color-inner);
-    outline-offset: -5px;
-    overflow: hidden;
-    background: var(--color-background);
-    border-radius: var(--border-radius-large);
-    box-shadow: var(--button-shadow);
+  --color-background: var(--color-paper-card);
+  --color-border: transparent;
+  outline: 2px solid var(--color-border);
+  outline-offset: -5px;
+  overflow: hidden;
+  background: var(--color-background);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--button-shadow);
 }
 
 .card:hover {
-    --color-background: var(--color-button-hover);
+  --color-border: var(--color-button);
 }
 
-.card:active {
-    --color-background: var(--color-button-active);
-}
-
-/* .card > div {
-  padding: var(--inner);
+/* .card:active {
+  --color-border: var(--color-button-active);
 } */
+
 .grid {
-    list-style-type: none;
-    display: grid;
-    gap: var(--outer);
-    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  list-style-type: none;
+  display: grid;
+  gap: var(--outer);
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
 }
 
 .card-radius {
-    border-radius: 1rem;
+  border-radius: 1rem;
 }
 
 .input, input[type="text"], input[type="email"], .button, .cta, .option {
-    /* border-radius: 1.4rem; */
-    border-radius: 0.8rem;
-    padding: 0.75rem 1.25rem;
+  /* border-radius: 1.4rem; */
+  border-radius: 0.8rem;
+  padding: 0.75rem 1.25rem;
 }
 
 .input, input[type="text"], input[type="email"] {
-    --color-background: var(--color-paper);
-    --color-border: var(--color-button);
-    background-color: var(--color-button);
-    color: var(--color-text);
-    outline: 2px solid var(--color-border);
-    outline-offset: -2px;
-    font-size: 1rem;
-    line-height: normal;
-    width: calc(100% - 2.5rem);
-    box-sizing: content-box;
-    /* box-shadow: var(--button-shadow); */
+  --color-background: var(--color-paper);
+  --color-border: var(--color-button);
+  background-color: var(--color-button);
+  color: var(--color-text);
+  outline: 2px solid var(--color-border);
+  outline-offset: -2px;
+  font-size: 1rem;
+  line-height: normal;
+  width: calc(100% - 2.5rem);
+  box-sizing: content-box;
+  /* box-shadow: var(--button-shadow); */
 }
 
 .input-hover, input[type="text"]:hover, input[type="email"]:hover {
-    --color-border: var(--color-border-field-hover);
+  --color-border: var(--color-border-field-hover);
 }
 
 .input-active, input[type="text"]:active, input[type="email"]:active {
-    --color-border: var(--color-border-field-active);
+  --color-border: var(--color-border-field-active);
 }
 
 .input-focus, input[type="text"]:focus, input[type="email"]:focus {
-    --color-border: var(--color-border-field-active);
+  --color-border: var(--color-border-field-active);
 }
 
 .button, .cta, .option {
-    background-color: var(--color-background);
-    color: var(--color-text);
-    outline: 2px solid var(--color-inner);
-    outline-offset: -5px;
-    font-family: var(--font-body);
-    font-variation-settings: 'wght' 600;
-    font-weight: 600;
-    font-size: 1rem;
-    line-height: 130%;
-    cursor: pointer;
-    display: flex;
-    flex-flow: row nowrap;
-    gap: var(--inner);
-    align-items: center;
-    width: fit-content;
-    text-decoration: none;
-    overflow: hidden;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  outline: 2px solid var(--color-inner);
+  outline-offset: -5px;
+  font-family: var(--font-body);
+  font-variation-settings: 'wght' 600;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 130%;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: var(--inner);
+  align-items: center;
+  width: fit-content;
+  text-decoration: none;
+  overflow: hidden;
 }
 
 .button {
-    --color-background: var(--color-button);
-    --color-text: var(--color-button-text);
-    --color-focus-ring: var(--color-button-ring);
-    /* box-shadow: var(--button-shadow); */
+  --color-background: var(--color-button);
+  --color-text: var(--color-button-text);
+  --color-focus-ring: var(--color-button-ring);
+  /* box-shadow: var(--button-shadow); */
 }
 
 .button:hover, .button-hover {
-    --color-background: var(--color-button-hover);
-    --color-text: var(--color-button-text);
-    /* background-image: url("/assets/specks_dark_button.png"), url("/assets/specks_light_button.png");
+  --color-background: var(--color-button-hover);
+  --color-text: var(--color-button-text);
+  /* background-image: url("/assets/specks_dark_button.png"), url("/assets/specks_light_button.png");
     background-size: 300px 300px, 300px 300px;
     background-repeat: repeat; */
 }
 
 .button:active, .button-active, .button:active {
-    --color-background: var(--color-button-active);
+  --color-background: var(--color-button-active);
 }
 
 .social {
-    grow: 1;
-    gap: var(--inter);
-    padding: var(--inter);
-    /* width: calc(100% - var(--inter) - var(--inter)); */
-    /* height: 100%; */
-    width: 100%;
-    justify-content: center;
+  grow: 1;
+  gap: var(--inter);
+  padding: var(--inter);
+  /* width: calc(100% - var(--inter) - var(--inter)); */
+  /* height: 100%; */
+  width: 100%;
+  justify-content: center;
 }
 
 .social>img {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
-    border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .youtube {
-    grow: 1;
-    padding: 0;
-    width: 100%;
-    /* height: 100%; */
-    justify-content: center;
+  grow: 1;
+  padding: 0;
+  width: 100%;
+  /* height: 100%; */
+  justify-content: center;
 }
 
 .youtube>img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 address {
-    width: 100%;
-    font-style: normal;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
+  width: 100%;
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
 }
 
 .cta {
-    --color-background: var(--color-cta);
-    --color-text: var(--color-cta-text);
-    --color-focus-ring: var(--color-cta-focus-ring);
-    box-shadow: var(--button-shadow);
-    /* background-image: url(/assets/specks_dark_cta.png), url(/assets/specks_light_cta.png);
+  --color-background: var(--color-cta);
+  --color-text: var(--color-cta-text);
+  --color-focus-ring: var(--color-cta-focus-ring);
+  box-shadow: var(--button-shadow);
+  /* background-image: url(/assets/specks_dark_cta.png), url(/assets/specks_light_cta.png);
     background-size: 240px 240px, 240px 240px;
     background-blend-mode: hard-light; */
 }
 
 .cta-hover, .cta:hover {
-    --color-background: var(--color-cta-hover);
-    --color-text: var(--color-cta-text);
+  --color-background: var(--color-cta-hover);
+  --color-text: var(--color-cta-text);
 }
 
 .cta-active, .cta:active {
-    --color-background: var(--color-cta-active);
-    --color-text: var(--color-cta-text);
+  --color-background: var(--color-cta-active);
+  --color-text: var(--color-cta-text);
 }
 
 .option {
-    --color-background: var(--color-option);
-    --color-text: var(--color-option-text);
-    --color-focus-ring: var(--color-option-focus-ring);
+  --color-background: var(--color-option);
+  --color-text: var(--color-option-text);
+  --color-focus-ring: var(--color-option-focus-ring);
 }
 
 input[type="radio"] {
-    display: none;
+  display: none;
 }
 
 .option-selected, input[type="radio"]:checked+label {
-    --color-background: var(--color-option-selected);
-    --color-text: var(--color-option-selected-text);
-    box-shadow: var(--button-shadow);
+  --color-background: var(--color-option-selected);
+  --color-text: var(--color-option-selected-text);
+  box-shadow: var(--button-shadow);
 }
 
 .option::before, input[type="radio"]+label::before {
-    display: block;
-    height: 18px;
-    width: 18px;
-    content: url("/assets/option-unchecked.svg");
+  display: block;
+  height: 18px;
+  width: 18px;
+  content: url("/assets/option-unchecked.svg");
 }
 
 .option-selected::before, input[type="radio"]:checked+label::before {
-    display: block;
-    height: 18px;
-    width: 18px;
-    content: url("/assets/option-checked.svg");
+  display: block;
+  height: 18px;
+  width: 18px;
+  content: url("/assets/option-checked.svg");
 }
 
 .option-hover, .option:hover {
-    --color-background: var(--color-option-hover);
+  --color-background: var(--color-option-hover);
 }
 
 .option-active, .option:active {
-    --color-background: var(--color-option-active);
+  --color-background: var(--color-option-active);
 }
 
 .option-selected-focused {
-    /* Class only for documentation */
-    --color-inner: var(--color-option-selected-text);
+  /* Class only for documentation */
+  --color-inner: var(--color-option-selected-text);
 }
 
 .button-focused, .cta-focused, .option-focused, .button:focus, .cta:focus, .option:focus {
-    --color-inner: var(--color-focus-ring);
+  --color-inner: var(--color-focus-ring);
 }
 
 :focus:not(:focus-visible) {
-    --color-inner: clear;
+  --color-inner: clear;
 }
 
 a.text-link,
 a.text-link:link,
 a.text-link:visited {
-    --color-text: var(--color-text);
-    --color-border: var(--color-border-static);
-    display: inline;
-    padding: 2px;
-    text-decoration: underline;
-    text-decoration-color: var(--color-cta);
-    text-decoration-thickness: 2px;
-    text-decoration-skip-ink: all;
-    text-underline-offset: 2px;
-    color: var(--color-text);
-    font-variation-settings: 'wght' 600;
-    font-weight: 600;
-    transition: all 0.2s;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+  --color-text: var(--color-text);
+  --color-border: var(--color-border-static);
+  display: inline;
+  padding: 2px;
+  text-decoration: underline;
+  text-decoration-color: var(--color-cta);
+  text-decoration-thickness: 2px;
+  text-decoration-skip-ink: all;
+  text-underline-offset: 2px;
+  color: var(--color-text);
+  font-variation-settings: 'wght' 600;
+  font-weight: 600;
+  transition: all 0.2s;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 a.text-link:hover {
-    color: var(--color-cta-hover);
-    text-decoration-color: var(--color-cta-hover);
-    text-decoration-thickness: 4px;
-    text-underline-offset: 2px;
+  color: var(--color-cta-hover);
+  text-decoration-color: var(--color-cta-hover);
+  text-decoration-thickness: 4px;
+  text-underline-offset: 2px;
 }
 
 a.text-link:active {
-    color: var(--color-cta-active);
-    text-decoration-color: var(--color-cta-active);
+  color: var(--color-cta-active);
+  text-decoration-color: var(--color-cta-active);
 }
 
 a.text-link:focus {
-    outline: none;
-    color: var(--color-cta-active);
-    text-decoration-color: var(--color-button-ring);
+  outline: none;
+  color: var(--color-cta-active);
+  text-decoration-color: var(--color-button-ring);
 }
 
 @media (max-width: 1100px) {
-    .triptych {
-        grid-template-columns: 1fr 1fr;
-    }
+  .triptych {
+    grid-template-columns: 1fr 1fr;
+  }
 
-    .diptych {
-        grid-template-columns: 1fr;
-    }
+  .diptych {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 672px) {
-    .state-separator {
-        flex-grow: 1;
-        justify-content: start;
-        align-items: start;
-        flex-basis: 100%;
-    }
+  .state-separator {
+    flex-grow: 1;
+    justify-content: start;
+    align-items: start;
+    flex-basis: 100%;
+  }
 
-    .horizontal {
-        flex-direction: column;
-        flex-wrap: nowrap;
-    }
+  .horizontal {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
 
-    /* .button, .cta, .option {
+  /* .button, .cta, .option {
     width: unset;
     flex-grow: 1;
   } */
-    .button, .cta {
-        justify-content: center;
-        align-items: center;
-    }
+  .button, .cta {
+    justify-content: center;
+    align-items: center;
+  }
 
-    /* .card {
+  /* .card {
     padding: 1.5rem;
   } */
-    .triptych {
-        grid-template-columns: 1fr;
-    }
+  .triptych {
+    grid-template-columns: 1fr;
+  }
 }
