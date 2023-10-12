@@ -1,12 +1,12 @@
-<a href='{{link}}'>
-  <div class="card">
+<a href='{{link}}' class="card">
     <img src='{{preview}}' style='width: 100%; aspect-ratio: 5 / 3; object-fit: cover;' />
 
     <article class="padded">
-      <h3>{{title}}</h3>
-      <author>{{author}} on {{date}}</author>
-      <p>{{description}}</p>
+        <div>
+            <h3>{{title}}</h3>
+            <author>By {{author}}</author>
+            <time>on {{date}}</time>
+        </div>
+        <p>{{description}}</p>
     </article>
-  </div>
-
 </a>

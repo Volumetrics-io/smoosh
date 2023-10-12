@@ -37,7 +37,7 @@
     --neutral-hue: 40;
     --color-title: hsl(var(--neutral-hue), 20%, 20%);
     --color-text: hsl(var(--neutral-hue), 15%, 10%);
-    --color-text-light: hsl(var(--neutral-hue), 20%, 60%);
+    --color-text-light: hsl(var(--neutral-hue), 20%, 50%);
     --color-paper: hsl(var(--neutral-hue), 80%, 94%);
     --color-paper-light: hsl(var(--neutral-hue), 75%, 92%);
     --color-paper-card: white;
@@ -93,6 +93,7 @@ legend,
 a,
 p,
 time,
+author,
 picture,
 figure,
 figcaption,
@@ -254,12 +255,21 @@ b,
 ul,
 ol,
 li,
-time,
 input {
     color: var(--color-text);
     font-family: var(--font-body);
     line-height: 165%;
     font-size: 1rem;
+}
+
+time,
+author {
+    /* display: block; */
+    /* width: 100%; */
+    color: var(--color-text-light);
+    font-family: var(--font-body);
+    line-height: 165%;
+    font-size: 0.85rem;
 }
 
 a {

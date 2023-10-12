@@ -4,7 +4,7 @@ Hey there! Laurent writing.
 
 A lot of background stuff is happening this week. We are still hiring, we're looking for an office space, and Michael is making more progress on MR.js.
 
-As promised, I would love to dive into the brand. I will try to walk you through the process while showcasing the brand we have created so far.
+As promised, I would love to dive into the brand. I will walk you through the process while showcasing the brand we have created so far.
 
 ## Brand attributes
 

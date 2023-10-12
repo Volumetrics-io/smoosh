@@ -4,3 +4,6 @@ Generate a RSS feed and link to it somewhere
 Fix margins on images in blog posts
 fix /we-raised-money
 right click menu on logo for media assets
+Update redirect in formspree
+bring back the /system page
+link appearence in markdown (text-link)

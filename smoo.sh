@@ -83,6 +83,10 @@ function generatePostList {
               if [ "$DATANAME" == "preview" ]; then
                   DATAVAL="/posts/$file_name/${DATAVAL}"
               fi
+              if [ "$DATANAME" == "date" ]; then
+                  # DATAVAL=$(date -d ${DATAVAL} '+%A %B %d, %Y')
+                  DATAVAL=$(date -d ${DATAVAL} '+%b %d, %Y')
+              fi
               post_string="${post_string//\{\{${DATANAME}\}\}/${DATAVAL}}"
           done
 
