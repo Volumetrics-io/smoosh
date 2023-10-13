@@ -17,7 +17,7 @@ Here is a useful exercise: imagine your brand as a person who just entered the r
 This first step is called brand attributes: a set of qualities that you are willing to display and defend. Here are Volumetrics'
 
 | Authentic | Resilient | Deliberate  |
-| --------- | --------- | ----------- |
+| :-------: | :-------: | :---------: |
 | Honest    | Timeless  | Thoughtful  |
 | Ethical   | Stable    | Opinionated |
 | Wholesome | Standard  | Measured    |

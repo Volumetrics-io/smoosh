@@ -38,14 +38,14 @@ We’re also growing our team. We're looking for a full-stack engineer, excited 
 
 ## A word from our sponsors
 
-"The investments from big tech companies will lead to hardware that will be adopted by millions of people, and equipping developers with tooling to create XR software will be critical. There couldn't be a better team to take this on than Michael and Laurent."
+"The investments from big tech companies will lead to hardware that will be adopted by millions of people, and equipping developers with tooling to create XR software will be critical. There couldn't be a better team to take this on than Michael and Laurent."  
 **Jack Altman**, _Alt Capital_
 
-"The Volumetrics team is uniquely well-positioned to tackle this opportunity. We are thrilled to be partnering with Michael & Laurent, alongside our friends Jack and Bala at Alt Capital, and are excited for what’s to come."
-David Kwon, Abstract Ventures
+"The Volumetrics team is uniquely well-positioned to tackle this opportunity. We are thrilled to be partnering with Michael & Laurent, alongside our friends Jack and Bala at Alt Capital, and are excited for what’s to come."  
+**David Kwon**, _Abstract Ventures_
 
 
 ## Press mentions
 
-Forbes — [This week in XR](https://www.forbes.com/sites/charliefink/2023/09/21/this-week-in-xr-ai-co-pilots-neuralink-human-trials-and-new-echo-frames/?sh=5d5f48164cad)
-Lowpass — [Newsletter](https://www.lowpass.cc/p/amazon-projection-mapping-xr-devices-event)
+- Forbes — [This week in XR](https://www.forbes.com/sites/charliefink/2023/09/21/this-week-in-xr-ai-co-pilots-neuralink-human-trials-and-new-echo-frames/?sh=5d5f48164cad)
+- Lowpass — [Newsletter](https://www.lowpass.cc/p/amazon-projection-mapping-xr-devices-event)

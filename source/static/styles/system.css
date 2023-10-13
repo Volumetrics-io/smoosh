@@ -25,6 +25,11 @@
   gap: 0;
 }
 
+.center {
+    width: 100%;
+    text-align: center;
+}
+
 .state-separator {
   display: flex;
   flex-grow: 1;

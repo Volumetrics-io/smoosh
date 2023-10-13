@@ -71,6 +71,7 @@
     /* FOCUS */
     --color-focus-outline: hsl(var(--hue), 100%, 50%);
     /* BORDERS */
+    --color-border-light: hsl(var(--rythm-hue), 15%, 92%);
     --color-border-static: hsla(var(--rythm-hue), 100%, 15%, 15%);
     --color-border-field-hover: hsl(var(--rythm-hue), 80%, 80%);
     --color-border-field-active: hsl(var(--rythm-hue), 100%, 70%);
@@ -105,7 +106,8 @@ pre,
 code,
 input,
 form,
-button {
+button,
+table, tr, td, th, tbody {
     padding: 0;
     margin: 0;
     border: none;
@@ -222,6 +224,7 @@ h1 {
     line-height: 100%;
     font-variation-settings: 'opsz' 100, 'wght' 800;
     font-weight: 800;
+    text-wrap: balance;
 }
 
 h2 {
@@ -231,6 +234,7 @@ h2 {
     line-height: 120%;
     font-variation-settings: 'opsz' 60, 'wght' 600;
     font-weight: 600;
+    text-wrap: balance;
 }
 
 /* h3 {
@@ -240,14 +244,14 @@ h2 {
     font-family: var(--font-body);
     line-height: 130%;
 } */
-
 h3, fieldset>legend {
-  font-family: var(--font-body);
-  color: var(--color-title);
-  font-variation-settings: 'wght' 600;
-  font-weight: 600;
-  font-size: 1.35rem;
-  line-height: 130%;
+    font-family: var(--font-body);
+    color: var(--color-title);
+    font-variation-settings: 'wght' 600;
+    font-weight: 600;
+    font-size: 1.35rem;
+    line-height: 130%;
+    text-wrap: balance;
 }
 
 p,
@@ -272,8 +276,14 @@ author {
     font-size: 0.85rem;
 }
 
+hr {
+    height: 1px;
+    background: var(--color-border-light);
+    width: 100%;
+}
+
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 b {
@@ -330,7 +340,7 @@ ol>li::before {
 }
 
 .block {
-  display: block;
+    display: block;
 }
 
 footer {
@@ -349,7 +359,6 @@ form {
     flex-direction: column;
     padding: 0;
     width: 100%;
-
     /* display: flex; */
     /* flex-wrap: wrap; */
     gap: var(--inter);
