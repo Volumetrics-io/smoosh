@@ -54,7 +54,7 @@ Together, I find this contrast very interesting. Let me know your thoughts if an
 
 With a name like Volumetrics, we wanted a logo that had a physicality to it. But we also wanted our logo to be sophisticated. Something special, complex, and technical. A plus was obviously something triangular because, you know, Volumetrics.
 
-![Three spheroforms sitting on a table. Each one has a different colors, and is rotated differently, to showcase their symmetry](shape.jpg)
+![A bronze spheroform sitting on a wooden table.](shape.jpg)
 
 When we stumbled upon this shape, we both fell in love with it. It is called a [Spheroform with tetrahedral symmetry](https://www.xtalgrafix.com/Spheroform2.htm). Here is a great [YouTube video](https://www.youtube.com/watch?v=fOojOfpcPZM) about it.
 

@@ -4,7 +4,7 @@ Michael and Laurent here. Thanks for subscribing to our newsletter!
 
 We’ve been hard at work getting things off the ground, but we’re very excited to have you along for the journey. In the past few weeks we’ve officially formed a company, created our landing page, and opened up our GitHub repos for all to see.
 
-![Hero image](twiv01-header.jpg)
+![The Volumetrics logo floating above a wooden table, with a coffee shop scene blurred in the background](twiv01-header.jpg)
 
 ## Product update
 
