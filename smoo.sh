@@ -31,6 +31,11 @@ assetDir='source/static'
 postsDir='source/posts'
 postTemplate='_post_template.html'
 
+# Website data for generated RSS feed
+feedTitle='Volumetrics Blog'
+feedURL='https://volusmoosh.onrender.com'
+feedDescription='Follow our progress while we’re building.'
+
 # Check if rsync is available
 if ! command -v rsync > /dev/null; then
       echo -e "🚨 rsync is not installed!\n"
@@ -43,62 +48,181 @@ fi
 replacementString="%and%"
 
 function generatePostList {
-  OLDIFS="$IFS"
-  IFS=$'\n'
+    OLDIFS="$IFS"
+    IFS=$'\n'
 
-  # POSTS LIST
-  # List of all the posts in the folder defined as postsDir as a <ul>
-  # Example: {{#posts:0}}
-  # ---------------------------------------------------------------
-  local postCount="$1"
-  local empty=''
-  local result=""
-  local iteration=0
+    # POSTS LIST
+    # List of all the posts in the folder defined as postsDir as a <ul>
+    # Example: {{#posts:0}}
+    # ---------------------------------------------------------------
+    local postCount="$1"
+    local empty=''
+    local result=""
+    local iteration=0
 
-  for folder in "$postsDir"/*
-  do
-      if [[ -d $folder ]]; then
-          # if a limiter is passed as {{#posts:3}} for the most recent 3 posts
-          if((postCount != 0)); then
-              if ((iteration >= $postCount)); then
-                  break  # Exit the loop when the maximum iterations are reached
-              fi
-              ((iteration++))
-          fi
+    # Initialize an associative array
+    declare -A posts
 
-          # Extract the file name
-          file_name=$(basename -- "$folder")
+    # Step 1 and 2: Extract dates and associate them with folders
+    for folder in "$postsDir"/*
+    do
+    if [[ -d $folder && -f "$folder/article.conf" ]]; then
+            # Extract the date from article.conf
+            # date=$(grep -E '^date:' "$folder/article.conf" | cut -d':' -f2 | xargs)
+            date=$(perl -ne '/^date:\s*(.+)/ && print $1' "$folder/article.conf")
 
-          # Load the post template
-          local post_string="$(<'source/_include/_post.html')"
-          link="/posts/$file_name/"
+            # Store the folder path, associated with its date
+            posts["$date"]="$folder"
+        fi
+    done
 
-          # Load the article metadata and smoosh them with the template
-          POSTDATA="$(<"$folder/article.conf")"
-          for DATA in $POSTDATA; do
-              DATANAME="${DATA%%:*}"
-              DATANAME=$(echo "$DATANAME" | xargs)
-              DATAVAL="${DATA#*:}"
-              DATAVAL=$(echo "$DATAVAL" | xargs)
-              if [ "$DATANAME" == "preview" ]; then
-                  DATAVAL="/posts/$file_name/${DATAVAL}"
-              fi
-              if [ "$DATANAME" == "date" ]; then
-                  # DATAVAL=$(date -d ${DATAVAL} '+%A %B %d, %Y')
-                  DATAVAL=$(date -d ${DATAVAL} '+%b %d, %Y')
-              fi
-              post_string="${post_string//\{\{${DATANAME}\}\}/${DATAVAL}}"
-          done
+    # Step 3: Sort dates and get them in an array
+    sorted_dates=( $(for date in "${!posts[@]}"; do echo "$date"; done | sort -r) )
 
-          post_string="${post_string//\{\{link\}\}/${link}}"
-          result="$result\n$post_string"
-      fi
+    # Step 4: Generate the articles in the sorted order
+    for date in "${sorted_dates[@]}"
+    do
+        if((postCount != 0)); then
+            if ((iteration >= $postCount)); then
+                break  # Exit the loop when the maximum iterations are reached
+            fi
+            ((iteration++))
+        fi
 
-  done
+        folder="${posts[$date]}"
+
+        # Extract the file name
+        folder_name=$(basename -- "$folder")
+
+        # Load the post template
+        local post_string="$(<'source/_include/_post.html')"
+        link="/posts/$folder_name/"
+
+
+        # Load the article metadata and smoosh them with the template
+        POSTDATA="$(<"$folder/article.conf")"
+        for DATA in $POSTDATA; do
+            DATANAME="${DATA%%:*}"
+            DATANAME=$(echo "$DATANAME" | xargs)
+            DATAVAL="${DATA#*:}"
+            DATAVAL=$(echo "$DATAVAL" | xargs)
+            if [ "$DATANAME" == "preview" ]; then
+                DATAVAL="/posts/$folder_name/${DATAVAL}"
+            fi
+            if [ "$DATANAME" == "date" ]; then
+                # DATAVAL=$(date -d ${DATAVAL} '+%A %B %d, %Y')
+                DATAVAL=$(date -d ${DATAVAL} '+%b %d, %Y')
+            fi
+            post_string="${post_string//\{\{${DATANAME}\}\}/${DATAVAL}}"
+        done
+
+        post_string="${post_string//\{\{link\}\}/${link}}"
+        result="$result\n$post_string"
+    done
+
   result="$result\n"
 
   IFS="$OLDIFS"
   echo -e "$result"
+}
+
+function trim {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    printf '%s' "$var"
+}
+
+function generateFeed {
+
+    # Initialize an associative array
+    declare -A posts
+
+    # Step 1 and 2: Extract dates and associate them with folders
+    for folder in "$postsDir"/*
+    do
+    if [[ -d $folder && -f "$folder/article.conf" ]]; then
+            # Extract the date from article.conf
+            date=$(perl -ne '/^date:\s*(.+)/ && print $1' "$folder/article.conf")
+
+            # Store the folder path, associated with its date
+            posts["$date"]="$folder"
+        fi
+    done
+
+    # Step 3: Sort dates and get them in an array
+    sorted_dates=( $(for date in "${!posts[@]}"; do echo "$date"; done | sort -r) )
+
+    feedFile="${outputDir}/feed.xml"
+
+    # Output RSS header
+    echo '<?xml version="1.0" encoding="UTF-8" ?>' > $feedFile
+    echo '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">' >> $feedFile
+    echo '<channel>' >> $feedFile
+    echo "    <title>${feedTitle}</title>" >> $feedFile
+    echo "    <link>${feedURL}</link>" >> $feedFile
+    echo "    <description>${feedDescription}</description>" >> $feedFile
+    echo '    <language>en-us</language>' >> $feedFile
+    echo '    <pubDate>'$(date -R)'</pubDate>' >> $feedFile
+
+    # Generate items in RSS feed
+    for date in "${sorted_dates[@]}"
+    do
+        folder="${posts[$date]}"
+        POSTDATA="$(<"$folder/article.conf")"
+
+        # Extract the file name
+        folder_name=$(basename -- "$folder")
+
+        # Initialize empty variables to avoid using old data
+        title=""
+        description=""
+        link=""
+        pubDate=""
+
+        # Extract data for each article
+        for DATA in $POSTDATA; do
+            DATANAME="${DATA%%:*}"
+            DATAVAL="${DATA#*:}"
+            # Use the data to generate RSS item
+            case "$DATANAME" in
+                title) title="$(trim "${DATAVAL}")" ;;
+                description) description="$(trim "${DATAVAL}")" ;;
+                preview) preview="$(trim "${DATAVAL}")" ;;
+                author) author="$(trim "${DATAVAL}")" ;;
+                # Add any other data fields you want to extract here...
+            esac
+        done
+
+        # Extract the content of the markdown file
+        # content="$(<"$folder/article.md")"
+
+        content="$(perl markdown.pl --html4tags "$folder/article.md")"
+
+        # Escape some XML special characters & < >
+        baseImagePath="${feedURL}/posts/${folder_name}/"
+        content="${content//<img src=\"/<img src=\"${baseImagePath}}"
+        # content="${content//</&lt;}"
+        # content="${content//>/&gt;}"
+
+
+        # Generate the RSS item XML
+        echo '    <item>' >> $feedFile
+        echo "        <title>${title}</title>" >> $feedFile
+        echo "        <link>${feedURL}/posts/${folder_name}/</link>" >> $feedFile
+        echo "        <description><![CDATA[<img src='${feedURL}/posts/${folder_name}/${preview}' /><p>${description}</p>]]></description>" >> $feedFile
+        echo "        <content:encoded><![CDATA[${content}]]></content:encoded>" >> $feedFile
+        echo "        <pubDate>$(date -R -d"$date")</pubDate>" >> $feedFile
+        echo '    </item>' >> $feedFile
+    done
+
+    # Output RSS footer
+    echo '</channel>' >> $feedFile
+    echo '</rss>' >> $feedFile
+
+    echo "📣 Generated RSS Feed"
 }
 
 function prerenderTemplate {
@@ -330,6 +454,8 @@ for ROUTE in $ROUTELIST; do
         echo "$emoji Rendered $TPLNAME to $(tput bold)$TPLPATH$(tput sgr0)"
     fi
 done
+
+generateFeed
 
 IFS="$OLDIFS"
 echo -e "🎀 The website is ready!\n"
