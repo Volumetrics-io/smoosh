@@ -435,7 +435,7 @@ do
         rsync -a "$folder" "${outputDir}/posts/"
         echo $templateOutput > "${outputDir}/posts/${folder_name}/index.html"
 
-        chars=🎄🌲🌳🌴🎋🌿🪴🌱🍀
+        chars=🎄🌲🌳🌴
         emoji="${chars:RANDOM%${#chars}:1}"
         echo "$emoji Generated blog post $(tput bold)$folder_name$(tput sgr0)"
     fi
@@ -458,4 +458,4 @@ done
 generateFeed
 
 IFS="$OLDIFS"
-echo -e "🎀 The website is ready!\n"
+echo -e "🎀 The website has been smooshed!\n"
