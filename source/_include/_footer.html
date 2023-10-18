@@ -1,17 +1,6 @@
 <footer>
-    © {{#bash:date +"%Y"}} Volumetrics, Inc. —
-    <a class="text-link" href="{{siteurl}}/feed.xml">RSS Feed</a>
+    <p>© Volumetrics, Inc.
+        {{#bash:date +"%Y"}} — All Rights Reserved
+    </p>
+    <p><a class="text-link" href="{{siteurl}}/feed.xml">RSS Feed</a></p>
 </footer>
-
-<script>
-    window.addEventListener("scroll", (event) => {
-        document.documentElement.style.setProperty('--position', this.scrollY / this.innerHeight);
-        document.documentElement.style.setProperty('--scroll', this.scrollY + "px");
-        document.documentElement.style.setProperty('--nav-opacity', Math.min(1, this.scrollY / 100));
-    }, {
-        passive: true
-    });
-    document.documentElement.style.setProperty('--scroll', "0px");
-    document.documentElement.style.setProperty('--position', 0);
-    document.documentElement.style.setProperty('--nav-opacity', 0);
-</script>

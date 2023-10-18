@@ -3,27 +3,17 @@
 
 {{#include:source/_include/_head.html}}
 
-  <style>
-  {{#include:source/static/styles/markdown.css}}
-  </style>
+<body>
+  {{#include:source/_include/_nav.html}}
+  <section>
+    {{#slot}}
+  </section>
+  <a href="/posts/">Recent articles</a>
+  <section class="grid">
+      {{#posts:3}}
+  </section>
+  {{#include:source/_include/_footer.html}}
 
-  <body>
-    {{#include:source/_include/_nav.html}}
-
-      <main class="gap-space">
-        <div class="markdown">
-          {{#slot}}
-        </div>
-
-        <section>
-          <h2 class="constraint">The latest posts</h2>
-          <div class="triptych">
-            {{#posts:3}}
-          </div>
-        </section>
-      </main>
-
-      {{#include:source/_include/_footer.html}}
-  </body>
+</body>
 
 </html>

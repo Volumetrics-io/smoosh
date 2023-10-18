@@ -1,12 +1,8 @@
-<a href='{{link}}' class="card">
-    <img src='{{preview}}' alt='{{alttext}}' style='width: 100%; aspect-ratio: 5 / 3; object-fit: cover;' />
-
-    <article class="padded">
-        <div>
-            <h3>{{title}}</h3>
-            <author>By {{author}}</author>
-            <time>on {{date}}</time>
-        </div>
-        <p>{{description}}</p>
-    </article>
-</a>
+<article>
+  <img src='{{preview}}' style='width: 100%; aspect-ratio: 5 / 3;' />
+    <h3>{{title}}</h3>
+    <author>{{author}}</author>
+    <time>{{date}}</time>
+    <p>{{description}}</p>
+    <p><a href='{{link}}'>Read more</a></p>
+</article>
