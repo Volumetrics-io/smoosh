@@ -1,22 +1,17 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
 
-<!--
-{{#set:title=Our blog}}
-{{#set:description=Follow our progress while we’re building.}}
--->
+{{#set:title=Volumetrics blog}}
+{{#set:description=Our blog}}
+{{#set:preview=static/light.jpg}}
 {{#include:source/_include/_head.html}}
 
 <body>
   {{#include:source/_include/_nav.html}}
 
-          <main class="gap-space">
-              <h1 class="constraint">{{title}}</h1>
-              <p class="constraint chapeau">{{description}}</p>
-              <section class="grid">
-                  {{#posts:0}}
-              </section>
-          </main>
+  <section class="grid">
+      {{#posts:0}}
+  </section>
 
   {{#include:source/_include/_footer.html}}
 </body>

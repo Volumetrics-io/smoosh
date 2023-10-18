@@ -1,9 +1,0 @@
-x Test and fix opengraph everywhere
-x Sort the blog posts by recency
-x Generate a RSS feed and link to it somewhere
-x Fix margins on images in blog posts
-x fix /we-raised-money
-right click menu on logo for media assets
-Update redirect in formspree
-bring back the /system page
-x link appearence in markdown (text-link)

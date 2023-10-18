@@ -2,22 +2,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
 
 <!--
-{{#set:title=About us}}
-{{#set:description=Building the spatial web, together.}}
-{{#set:preview=static/opengraph.jpg}}
+{{#set:title=About me}}
+{{#set:description=Sample about page}}
+{{#set:preview=static/light.jpg}}
 -->
-
 {{#include:source/_include/_head.html}}
 
 <body>
-        {{#include:source/_include/_nav.html}}
+  {{#include:source/_include/_nav.html}}
 
-        <main class="gap-space">
-            <h1 class="constraint">{{title}}</h1>
-            <p class="constraint chapeau">{{description}}</p>
-        </main>
+  <header>
+    <h1>{{title}}</h1>
+    <p>{{description}}</p>
+  </header>
 
-        {{#include:source/_include/_footer.html}}
+  <section>
+    <blockquote>I would not give a fig for the simplicity on this side of complexity, but I would give my life for the simplicity on the other side of complexity.</blockquote>
+  </section>
+  {{#include:source/_include/_footer.html}}
 </body>
 
 </html>

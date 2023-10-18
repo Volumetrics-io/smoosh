@@ -3,8 +3,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{sitename}} · {{title}}</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <!-- Stylesheet -->
+    <!-- <link type="text/css" rel="stylesheet" href="/static/style.css" /> -->
+    <link href="data:image/x-icon;base64,=" rel="icon" type="image/x-icon" />
+    <link rel="icon" type="image/svg" href="/static/favicon.svg" />
 
     <!-- SEO -->
     <meta name="description" content="{{description}}" />
@@ -23,21 +25,7 @@
     <meta content="{{description}}" property="og:description" class="next-head" />
     <meta content="{{sitename}}" property="og:site_name" class="next-head" />
 
-    <script defer data-domain="volumetrics.io" src="https://plausible.io/js/script.js"></script>
-
-    <link rel="preload" href="/static/fonts/Bricolage.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/static/fonts/Onest-Regular.woff" as="font" type="font/woff" crossorigin />
-    <link rel="preload" href="/static/fonts/Onest-Bold.woff" as="font" type="font/woff" crossorigin />
-
-    <!-- <link rel="stylesheet" type="text/css" href="/static/styles/global.css" /> -->
-    <!-- <link rel="stylesheet" type="text/css" href="/static/styles/system.css" /> -->
-
-    <!-- Stylesheets -->
     <style>
-      /* Global style */
-      {{#include:source/static/styles/global.css}}
-
-      /* Design system */
-      {{#include:source/static/styles/system.css}}
+      {{#include:source/static/style.css}}
     </style>
 </head>
